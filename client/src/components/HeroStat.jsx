@@ -18,7 +18,7 @@ export default function HeroStat({ price, window, loading }) {
                 <span className="text-gray-400 text-xl font-medium">AUD</span>
               </>
             ) : (
-              <span className="text-3xl font-medium text-gray-500">No data yet</span>
+              <span className="text-3xl font-medium text-gray-500">No flights found under A$1,100</span>
             )}
           </div>
           {window && (
