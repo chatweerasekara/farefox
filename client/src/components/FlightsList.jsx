@@ -2,7 +2,6 @@ function dur(mins) {
   if (!mins) return '—';
   return `${Math.floor(mins / 60)}h ${mins % 60}m`;
 }
-
 function fmt(isoStr) {
   if (!isoStr) return '—';
   try {
@@ -10,8 +9,25 @@ function fmt(isoStr) {
   } catch { return '—'; }
 }
 
+function getBookingUrl(airline, date) {
+  const isJetstar = airline.toLowerCase().includes('jetstar');
+  const isSriLankan = airline.toLowerCase().includes('sri');
+  if (isJetstar) {
+    // Jetstar MEL→CMB deep link
+    return `https://www.jetstar.com/au/en/flights/results?from=MEL&to=CMB&departDate=${date}&adults=1&children=0&infants=0&cabin=Y`;
+  }
+  if (isSriLankan) {
+    // SriLankan Airlines search
+    return `https://www.srilankan.com/en_uk/fly-with-us/book-a-flight?from=MEL&to=CMB&departDate=${date}&adults=1`;
+  }
+  // Fallback to Google Flights
+  return `https://www.google.com/travel/flights?q=flights+from+MEL+to+CMB+on+${date}`;
+}
+
 function FlightRow({ flight, rank }) {
   const isAlert = flight.price_aud < 1100;
+  const bookingUrl = getBookingUrl(flight.airline, flight.departure_date);
+
   return (
     <div className={[
       'flex items-center justify-between py-4 px-5 rounded-xl transition-colors',
@@ -24,7 +40,6 @@ function FlightRow({ flight, rank }) {
           <p className="text-xs text-gray-400 mt-0.5">{flight.departure_date}</p>
         </div>
       </div>
-
       <div className="hidden sm:flex flex-col items-center text-center">
         <span className="text-sm text-gray-700 font-medium">
           {fmt(flight.departure_time)} → {fmt(flight.arrival_time)}
@@ -34,14 +49,28 @@ function FlightRow({ flight, rank }) {
           {' · '}{dur(flight.duration_mins)}
         </span>
       </div>
-
-      <div className="text-right">
-        <p className={['text-lg font-bold', isAlert ? 'text-emerald-700' : 'text-gray-900'].join(' ')}>
-          A${flight.price_aud.toFixed(0)}
-        </p>
-        {isAlert && (
-          <p className="text-xs text-emerald-600 font-medium mt-0.5">Under threshold</p>
-        )}
+      <div className="flex items-center gap-3">
+        <div className="text-right">
+          <p className={['text-lg font-bold', isAlert ? 'text-emerald-700' : 'text-gray-900'].join(' ')}>
+            A${flight.price_aud.toFixed(0)}
+          </p>
+          {isAlert && (
+            <p className="text-xs text-emerald-600 font-medium mt-0.5">Under threshold</p>
+          )}
+        </div>
+        <a
+          href={bookingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={[
+            'text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap',
+            isAlert
+              ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+              : 'bg-gray-900 text-white hover:bg-gray-700',
+          ].join(' ')}
+        >
+          Book →
+        </a>
       </div>
     </div>
   );
@@ -56,7 +85,6 @@ export default function FlightsList({ flights, loading }) {
           <span className="ml-2 font-normal text-gray-300">— latest scan</span>
         )}
       </h2>
-
       {loading ? (
         <div className="space-y-2">
           {[1, 2, 3].map(i => (
