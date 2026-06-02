@@ -8,8 +8,8 @@ import FlightsList from './components/FlightsList';
 const API = import.meta.env.VITE_API_URL ?? '';
 
 const WINDOWS = [
-  { id: 1, label: 'Dec 10 – Jan 20' },
-  { id: 2, label: 'Apr 5 – Apr 20' },
+  { id: 1, label: 'Christmas & New Year', dateRange: 'Dec 10 – Jan 20' },
+  { id: 2, label: 'Sri Lankan New Year', dateRange: 'Apr 5 – Apr 20' },
 ];
 
 export default function App() {
@@ -20,6 +20,7 @@ export default function App() {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [scraping, setScraping] = useState(false);
+  const [windowMeta, setWindowMeta] = useState(null);
 
   const fetchData = useCallback(async (windowId) => {
     setLoading(true);
@@ -33,7 +34,11 @@ export default function App() {
       setFlights(await flightsRes.json());
       setHistory(await historyRes.json());
       setAlerts(await alertsRes.json());
-      setStatus(await statusRes.json());
+      const s = await statusRes.json();
+      setStatus(s);
+      // Extract window year info from status
+      const win = s.windows?.find(w => w.id === windowId);
+      setWindowMeta(win ?? null);
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
@@ -49,7 +54,6 @@ export default function App() {
     setScraping(true);
     try {
       await fetch(`${API}/api/scrape`, { method: 'POST' });
-      // Poll status until scrape completes (max 5 min)
       let attempts = 0;
       const poll = setInterval(async () => {
         attempts++;
@@ -106,7 +110,7 @@ export default function App() {
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
         {alerts.length > 0 && <AlertBanner alerts={alerts} />}
 
-        <HeroStat price={heroPrice} window={activeWin} loading={loading} />
+        <HeroStat price={heroPrice} window={activeWin} windowMeta={windowMeta} loading={loading} />
 
         <DateWindowTabs windows={WINDOWS} active={activeWindow} onChange={setActiveWindow} />
 
