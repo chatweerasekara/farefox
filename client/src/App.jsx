@@ -5,6 +5,8 @@ import DateWindowTabs from './components/DateWindowTabs';
 import PriceChart from './components/PriceChart';
 import FlightsList from './components/FlightsList';
 
+const API = import.meta.env.VITE_API_URL ?? '';
+
 const WINDOWS = [
   { id: 1, label: 'Dec 10 – Jan 20' },
   { id: 2, label: 'Apr 5 – Apr 20' },
@@ -23,10 +25,10 @@ export default function App() {
     setLoading(true);
     try {
       const [flightsRes, historyRes, alertsRes, statusRes] = await Promise.all([
-        fetch(`/api/flights/latest?window=${windowId}`),
-        fetch(`/api/history?window=${windowId}`),
-        fetch('/api/alerts'),
-        fetch('/api/status'),
+        fetch(`${API}/api/flights/latest?window=${windowId}`),
+        fetch(`${API}/api/history?window=${windowId}`),
+        fetch(`${API}/api/alerts`),
+        fetch(`${API}/api/status`),
       ]);
       setFlights(await flightsRes.json());
       setHistory(await historyRes.json());
@@ -46,12 +48,12 @@ export default function App() {
   const handleScrape = async () => {
     setScraping(true);
     try {
-      await fetch('/api/scrape', { method: 'POST' });
+      await fetch(`${API}/api/scrape`, { method: 'POST' });
       // Poll status until scrape completes (max 5 min)
       let attempts = 0;
       const poll = setInterval(async () => {
         attempts++;
-        const res = await fetch('/api/status');
+        const res = await fetch(`${API}/api/status`);
         const s = await res.json();
         setStatus(s);
         if (!s.isRunning || attempts > 60) {
