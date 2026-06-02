@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 const HEADER = 'timestamp,window,departure_date,airline,price_aud,stops,duration_mins,departure_time,arrival_time\n';
 
 function ensureDataDir() {

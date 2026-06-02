@@ -54,10 +54,10 @@ async function runScrape() {
 function startScheduler() {
   // Daily at 08:00 local time
   cron.schedule('0 8 * * *', () => {
-    console.log('[Scheduler] Cron fired — 08:00 daily scrape');
+    console.log('[Scheduler] Cron fired — 08:00 Melbourne daily scrape');
     runScrape();
-  });
-  console.log('[Scheduler] Daily scrape scheduled at 08:00');
+  }, { timezone: 'Australia/Melbourne' });
+  console.log('[Scheduler] Daily scrape scheduled at 08:00 Australia/Melbourne');
 }
 
 function getStatus() {
