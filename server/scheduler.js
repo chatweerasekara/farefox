@@ -36,7 +36,7 @@ async function runScrape() {
     if (alertFlights.length > 0) {
       const f = alertFlights[0];
       const dur = `${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m`;
-      const msg = `Farefox: ${f.airline} MEL→CMB on ${f.departure_date} for A$${f.price_aud.toFixed(0)}. ${f.stops} stop(s), ${dur}. Book now!`;
+      const msg = `Farefox: ${f.airline} MEL->CMB on ${f.departure_date} for AUD ${f.price_aud.toFixed(0)}. ${f.stops} stop(s), ${dur}. Book now!`;
       await sendWhatsAppAlert(msg);
     }
 
