@@ -15,7 +15,7 @@ export default function DateWindowTabs({ windows, active, onChange }) {
             ].join(' ')}
           >
             <span className="block text-xs opacity-60 mb-0.5 font-normal">
-              {w.id === 1 ? 'Summer / New Year' : 'Autumn'}
+              {w.id === 1 ? 'Summer' : 'Autumn'}
             </span>
             {w.label}
           </button>
