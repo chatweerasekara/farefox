@@ -9,7 +9,9 @@ const { getWindow1, getWindow2 } = require('./dateWindows');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://farefox-seven.vercel.app', 'http://localhost:5173']
+}));
 app.use(express.json());
 
 // GET /api/status
