@@ -19,20 +19,18 @@ function fmtDate(dateStr) {
   } catch { return dateStr; }
 }
 
-function getBookingUrl(airline, date) {
-  const a = airline.toLowerCase();
-  if (a.includes('jetstar')) {
-    return `https://www.google.com/travel/flights?q=Jetstar+flights+from+Melbourne+to+Colombo+on+${date}`;
-  }
-  if (a.includes('sri')) {
-    return `https://www.google.com/travel/flights?q=SriLankan+Airlines+flights+from+Melbourne+to+Colombo+on+${date}`;
-  }
-  return `https://www.google.com/travel/flights?q=flights+from+Melbourne+to+Colombo+on+${date}`;
+function getSkyscannerUrl(date) {
+  // Format date as YYMMDD for Skyscanner
+  const d = new Date(date);
+  const yy = String(d.getFullYear()).slice(2);
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `https://www.skyscanner.com.au/transport/flights/mel/cmb/${yy}${mm}${dd}/?adults=1&cabinclass=economy&rtn=0&currency=AUD`;
 }
 
 function FlightRow({ flight, rank }) {
   const isAlert = flight.price_aud < 1100;
-  const bookingUrl = getBookingUrl(flight.airline, flight.departure_date);
+  const bookingUrl = getSkyscannerUrl(flight.departure_date);
 
   return (
     <div className={[
@@ -60,8 +58,10 @@ function FlightRow({ flight, rank }) {
           <p className={['text-lg font-bold', isAlert ? 'text-amber-600' : 'text-gray-900'].join(' ')}>
             A${flight.price_aud.toFixed(0)}
           </p>
-          {isAlert && (
+          {isAlert ? (
             <p className="text-xs text-amber-500 font-medium mt-0.5">Under threshold</p>
+          ) : (
+            <p className="text-xs text-gray-300 mt-0.5">Confirm on site</p>
           )}
         </div>
         <a
@@ -103,11 +103,16 @@ export default function FlightsList({ flights, loading }) {
           <span className="text-sm">No flights found yet — hit Scan Now to fetch prices</span>
         </div>
       ) : (
-        <div className="space-y-2">
-          {flights.slice(0, 15).map((f, i) => (
-            <FlightRow key={i} flight={f} rank={i + 1} />
-          ))}
-        </div>
+        <>
+          <div className="space-y-2">
+            {flights.slice(0, 15).map((f, i) => (
+              <FlightRow key={i} flight={f} rank={i + 1} />
+            ))}
+          </div>
+          <p className="text-xs text-gray-300 text-center mt-4">
+            Prices are indicative and may vary. Always confirm on the airline site before booking.
+          </p>
+        </>
       )}
     </div>
   );
