@@ -21,6 +21,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [scraping, setScraping] = useState(false);
   const [windowMeta, setWindowMeta] = useState(null);
+  const [windows, setWindows] = useState(WINDOWS);
 
   const fetchData = useCallback(async (windowId) => {
     setLoading(true);
@@ -38,6 +39,13 @@ export default function App() {
       setStatus(s);
       const win = s.windows?.find(w => w.id === windowId);
       setWindowMeta(win ?? null);
+      // Merge startDate from API into WINDOWS for countdown
+      if (s.windows) {
+        setWindows(WINDOWS.map(w => {
+          const meta = s.windows.find(sw => sw.id === w.id);
+          return meta ? { ...w, startDate: meta.startDate } : w;
+        }));
+      }
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
@@ -71,7 +79,7 @@ export default function App() {
   };
 
   const heroPrice = flights.length > 0 ? Math.min(...flights.map(f => f.price_aud)) : null;
-  const activeWin = WINDOWS.find(w => w.id === activeWindow);
+  const activeWin = windows.find(w => w.id === activeWindow);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -118,7 +126,7 @@ export default function App() {
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
         {alerts.length > 0 && <AlertBanner alerts={alerts} />}
         <HeroStat price={heroPrice} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} />
-        <DateWindowTabs windows={WINDOWS} active={activeWindow} onChange={setActiveWindow} />
+        <DateWindowTabs windows={windows} active={activeWindow} onChange={setActiveWindow} />
         <PriceChart history={history} loading={loading} />
         <FlightsList flights={flights} loading={loading} />
         <p className="text-center text-xs text-gray-300 pb-4">
