@@ -57,10 +57,10 @@ function FlightRow({ flight, rank }) {
         <div
           className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold flex-shrink-0"
           style={{
-            background: isAlert ? 'rgba(193,123,42,0.12)' : '#f5f5f5',
-            color: isAlert ? '#C17B2A' : '#888',
-            border: `0.5px solid ${isAlert ? 'rgba(193,123,42,0.2)' : '#eee'}`
-          }}
+  background: code === 'JQ' ? '#FF5A00' : code === 'UL' ? '#003875' : '#f5f5f5',
+  color: code === 'JQ' ? '#fff' : code === 'UL' ? '#FFD700' : '#888',
+  border: 'none'
+}}
         >
           {code}
         </div>
