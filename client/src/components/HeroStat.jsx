@@ -14,7 +14,6 @@ export default function HeroStat({ price, window, windowMeta, loading, history }
       })()
     : null;
 
-  // Calculate price trend vs previous scan
   const trend = (() => {
     if (!history || history.length < 2 || !price) return null;
     const sorted = [...history].sort((a, b) => a.date.localeCompare(b.date));
@@ -55,20 +54,15 @@ export default function HeroStat({ price, window, windowMeta, loading, history }
             )}
           </div>
 
-          {/* Trend badge */}
           {!loading && price && trend && (
             <div className="mt-3 flex items-center gap-3">
-              <span
-                className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
-                style={trendStyles[trend.type]}
-              >
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full" style={trendStyles[trend.type]}>
                 {trendLabel[trend.type]}
               </span>
               <span className="text-xs" style={{color: '#555'}}>vs previous scan</span>
             </div>
           )}
 
-          {/* One way pill */}
           <div
             className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full mt-3"
             style={{background: 'rgba(255,255,255,0.07)', color: '#ccc', border: '0.5px solid rgba(255,255,255,0.12)'}}
@@ -102,8 +96,8 @@ export default function HeroStat({ price, window, windowMeta, loading, history }
                 </span>
               )}
               {isAbove && (
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full" style={{background: 'rgba(220,60,60,0.12)', color: '#e05555', border: '0.5px solid rgba(220,60,60,0.2)'}}>
-                  <span className="w-1.5 h-1.5 rounded-full" style={{background: '#e05555'}} />
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full" style={{background: 'rgba(220,60,60,0.15)', color: '#ff6b6b', border: '0.5px solid rgba(220,60,60,0.3)'}}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{background: '#ff6b6b'}} />
                   Above threshold
                 </span>
               )}
