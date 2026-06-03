@@ -9,7 +9,7 @@ const API = import.meta.env.VITE_API_URL ?? '';
 
 const WINDOWS = [
   { id: 1, label: 'Christmas & New Year', season: 'Summer', dateRange: 'Dec 10 – Jan 20' },
-  { id: 2, label: 'Sri Lankan New Year', season: 'Autumn', dateRange: 'Apr 5 – Apr 20' },
+  { id: 2, label: 'Sri Lankan New Year', season: 'Sri Lankan New Year', dateRange: 'Apr 5 – Apr 20' },
 ];
 
 export default function App() {
@@ -86,7 +86,14 @@ export default function App() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-2xl leading-none">🦊</span>
+            <div style={{position: "relative", width: "52px", height: "52px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center"}}>
+              <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style={{position: "absolute", top: 0, left: 0}}>
+                <circle cx="26" cy="26" r="18" stroke="#111" strokeWidth="1.5" fill="none"/>
+                <path d="M35 9 Q44 2 52 7 Q46 10 41 15 Q38 12 35 9Z" fill="#C17B2A"/>
+                <path d="M37 16 Q43 12 50 15 Q46 17 42 20 Q40 18 37 16Z" fill="#C17B2A" opacity="0.35"/>
+              </svg>
+              <span style={{position: "absolute", fontSize: "22px", lineHeight: 1, top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 1}}>🦊</span>
+            </div>
             <div>
               <div className="leading-none">
                 <span className="text-xl font-medium tracking-tight text-gray-900" style={{letterSpacing: '-0.03em'}}>Fare</span>
