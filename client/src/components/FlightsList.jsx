@@ -20,7 +20,6 @@ function fmtDate(dateStr) {
 }
 
 function getSkyscannerUrl(date) {
-  // Format date as YYMMDD for Skyscanner
   const d = new Date(date);
   const yy = String(d.getFullYear()).slice(2);
   const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -28,23 +27,46 @@ function getSkyscannerUrl(date) {
   return `https://www.skyscanner.com.au/transport/flights/mel/cmb/${yy}${mm}${dd}/?adults=1&cabinclass=economy&rtn=0&currency=AUD`;
 }
 
+function getAirlineCode(airline) {
+  const a = airline.toLowerCase();
+  if (a.includes('jetstar')) return 'JQ';
+  if (a.includes('sri')) return 'UL';
+  return airline.slice(0, 2).toUpperCase();
+}
+
+function getWhatsAppShareText(flight) {
+  const text = `✈ Farefox found ${flight.airline} MEL→CMB on ${fmtDate(flight.departure_date)} for A$${flight.price_aud.toFixed(0)} (one way). Check it out: https://farefox-seven.vercel.app`;
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+}
+
 function FlightRow({ flight, rank }) {
   const isAlert = flight.price_aud < 1100;
   const bookingUrl = getSkyscannerUrl(flight.departure_date);
+  const shareUrl = getWhatsAppShareText(flight);
+  const code = getAirlineCode(flight.airline);
 
   return (
     <div className={[
-      'flex items-center justify-between py-4 px-5 rounded-xl transition-colors',
+      'flex items-center justify-between py-4 px-5 rounded-xl transition-colors gap-3',
       isAlert ? 'bg-amber-50 border border-amber-200' : 'border border-gray-100 hover:border-gray-200',
     ].join(' ')}>
-      <div className="flex items-center gap-4">
-        <span className="text-xs font-bold text-gray-300 w-4">{rank}</span>
-        <div>
-          <p className="font-semibold text-gray-900 text-sm">{flight.airline}</p>
+      {/* Rank + Airline */}
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="text-xs font-bold text-gray-300 w-4 flex-shrink-0">{rank}</span>
+        <div
+          className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold flex-shrink-0"
+          style={{background: isAlert ? 'rgba(193,123,42,0.12)' : '#f5f5f5', color: isAlert ? '#C17B2A' : '#888', border: `0.5px solid ${isAlert ? 'rgba(193,123,42,0.2)' : '#eee'}`}}
+        >
+          {code}
+        </div>
+        <div className="min-w-0">
+          <p className="font-semibold text-gray-900 text-sm truncate">{flight.airline}</p>
           <p className="text-xs text-gray-400 mt-0.5">{fmtDate(flight.departure_date)}</p>
         </div>
       </div>
-      <div className="hidden sm:flex flex-col items-center text-center">
+
+      {/* Times — visible on all screens */}
+      <div className="flex flex-col items-center text-center flex-shrink-0 hidden xs:flex sm:flex">
         <span className="text-sm text-gray-700 font-medium">
           {fmt(flight.departure_time)} → {fmt(flight.arrival_time)}
         </span>
@@ -53,7 +75,9 @@ function FlightRow({ flight, rank }) {
           {' · '}{dur(flight.duration_mins)}
         </span>
       </div>
-      <div className="flex items-center gap-3">
+
+      {/* Price + Actions */}
+      <div className="flex items-center gap-2 flex-shrink-0">
         <div className="text-right">
           <p className={['text-lg font-bold', isAlert ? 'text-amber-600' : 'text-gray-900'].join(' ')}>
             A${flight.price_aud.toFixed(0)}
@@ -70,12 +94,19 @@ function FlightRow({ flight, rank }) {
           rel="noopener noreferrer"
           className={[
             'text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap',
-            isAlert
-              ? 'bg-amber-500 text-white hover:bg-amber-600'
-              : 'bg-gray-900 text-white hover:bg-gray-700',
+            isAlert ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-gray-900 text-white hover:bg-gray-700',
           ].join(' ')}
         >
           Book →
+        </a>
+        <a
+          href={shareUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap border border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600"
+          title="Share on WhatsApp"
+        >
+          Share
         </a>
       </div>
     </div>
@@ -86,14 +117,14 @@ export default function FlightsList({ flights, loading }) {
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-6">
       <div className="flex items-center gap-2 mb-4">
-  <span className="text-sm font-medium text-gray-900">Cheapest Flights</span>
-  {flights.length > 0 && (
-    <>
-      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 border border-gray-200">One way</span>
-      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 border border-gray-200">Latest scan</span>
-    </>
-  )}
-</div>
+        <span className="text-sm font-medium text-gray-900">Cheapest Flights</span>
+        {flights.length > 0 && (
+          <>
+            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 border border-gray-200">One way</span>
+            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 border border-gray-200">Latest scan</span>
+          </>
+        )}
+      </div>
       {loading ? (
         <div className="space-y-2">
           {[1, 2, 3].map(i => (
