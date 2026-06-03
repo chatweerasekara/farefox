@@ -85,12 +85,15 @@ function FlightRow({ flight, rank }) {
 export default function FlightsList({ flights, loading }) {
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-6">
-      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">
-        Cheapest Flights
-        {flights.length > 0 && (
-          <span className="ml-2 font-normal text-gray-300">— latest scan · one way</span>
-        )}
-      </h2>
+      <div className="flex items-center gap-2 mb-4">
+  <span className="text-sm font-medium text-gray-900">Cheapest Flights</span>
+  {flights.length > 0 && (
+    <>
+      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 border border-gray-200">One way</span>
+      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-400 border border-gray-200">Latest scan</span>
+    </>
+  )}
+</div>
       {loading ? (
         <div className="space-y-2">
           {[1, 2, 3].map(i => (
