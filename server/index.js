@@ -34,11 +34,14 @@ app.get('/api/flights/latest', (req, res) => {
   if (!flights.length) return res.json([]);
 
   const latestTs = flights.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
-  const latest = flights
-    .filter(f => f.timestamp === latestTs)
-    .sort((a, b) => a.price_aud - b.price_aud);
-
-  res.json(latest);
+  const latestFlights = flights.filter(f => f.timestamp === latestTs);
+const seen = new Map();
+for (const f of latestFlights) {
+  const key = `${f.departure_date}-${f.airline}-${f.departure_time}`;
+  if (!seen.has(key)) seen.set(key, f);
+}
+const latest = [...seen.values()].sort((a, b) => a.price_aud - b.price_aud);
+res.json(latest);
 });
 
 // GET /api/history?window=1|2
