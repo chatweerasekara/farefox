@@ -47,39 +47,29 @@ function FlightRow({ flight, rank }) {
 
   return (
     <div className={[
-      'flex items-center justify-between py-4 px-5 rounded-xl transition-colors gap-3',
+      'rounded-xl transition-colors p-4',
       isAlert ? 'bg-amber-50 border border-amber-200' : 'border border-gray-100 hover:border-gray-200',
     ].join(' ')}>
-      {/* Rank + Airline */}
-      <div className="flex items-center gap-3 min-w-0">
+
+      {/* Top row — rank, badge, airline, price, book */}
+      <div className="flex items-center gap-3">
         <span className="text-xs font-bold text-gray-300 w-4 flex-shrink-0">{rank}</span>
         <div
           className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold flex-shrink-0"
-          style={{background: isAlert ? 'rgba(193,123,42,0.12)' : '#f5f5f5', color: isAlert ? '#C17B2A' : '#888', border: `0.5px solid ${isAlert ? 'rgba(193,123,42,0.2)' : '#eee'}`}}
+          style={{
+            background: isAlert ? 'rgba(193,123,42,0.12)' : '#f5f5f5',
+            color: isAlert ? '#C17B2A' : '#888',
+            border: `0.5px solid ${isAlert ? 'rgba(193,123,42,0.2)' : '#eee'}`
+          }}
         >
           {code}
         </div>
-        <div className="min-w-0">
+        <div className="flex-1 min-w-0">
           <p className="font-semibold text-gray-900 text-sm truncate">{flight.airline}</p>
           <p className="text-xs text-gray-400 mt-0.5">{fmtDate(flight.departure_date)}</p>
         </div>
-      </div>
-
-      {/* Times — visible on all screens */}
-      <div className="flex flex-col items-center text-center flex-shrink-0 hidden xs:flex sm:flex">
-        <span className="text-sm text-gray-700 font-medium">
-          {fmt(flight.departure_time)} → {fmt(flight.arrival_time)}
-        </span>
-        <span className="text-xs text-gray-400 mt-0.5">
-          {flight.stops === 0 ? 'Direct' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`}
-          {' · '}{dur(flight.duration_mins)}
-        </span>
-      </div>
-
-      {/* Price + Actions */}
-      <div className="flex items-center gap-2 flex-shrink-0">
-        <div className="text-right">
-          <p className={['text-lg font-bold', isAlert ? 'text-amber-600' : 'text-gray-900'].join(' ')}>
+        <div className="text-right flex-shrink-0">
+          <p className={['text-base font-bold', isAlert ? 'text-amber-600' : 'text-gray-900'].join(' ')}>
             A${flight.price_aud.toFixed(0)}
           </p>
           {isAlert ? (
@@ -88,27 +78,43 @@ function FlightRow({ flight, rank }) {
             <p className="text-xs text-gray-300 mt-0.5">Confirm on site</p>
           )}
         </div>
-        <a
-          href={bookingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={[
-            'text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap',
-            isAlert ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-gray-900 text-white hover:bg-gray-700',
-          ].join(' ')}
-        >
-          Book →
-        </a>
-        <a
-          href={shareUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap border border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600"
-          title="Share on WhatsApp"
-        >
-          Share
-        </a>
       </div>
+
+      {/* Bottom row — times + actions */}
+      <div className="flex items-center justify-between mt-3 pl-12">
+        <div>
+          <p className="text-sm text-gray-700 font-medium">
+            {fmt(flight.departure_time)} → {fmt(flight.arrival_time)}
+          </p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {flight.stops === 0 ? 'Direct' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`}
+            {' · '}{dur(flight.duration_mins)}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href={bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={[
+              'text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap',
+              isAlert ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-gray-900 text-white hover:bg-gray-700',
+            ].join(' ')}
+          >
+            Book →
+          </a>
+          <a
+            href={shareUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap border border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600"
+            title="Share on WhatsApp"
+          >
+            Share
+          </a>
+        </div>
+      </div>
+
     </div>
   );
 }
@@ -128,7 +134,7 @@ export default function FlightsList({ flights, loading }) {
       {loading ? (
         <div className="space-y-2">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-gray-50 rounded-xl animate-pulse" />
+            <div key={i} className="h-20 bg-gray-50 rounded-xl animate-pulse" />
           ))}
         </div>
       ) : flights.length === 0 ? (
