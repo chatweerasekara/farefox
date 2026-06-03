@@ -8,7 +8,7 @@ import FlightsList from './components/FlightsList';
 const API = import.meta.env.VITE_API_URL ?? '';
 
 const WINDOWS = [
-  { id: 1, label: 'Summer, Christmas & New Year', season: 'Summer', dateRange: 'Dec 10 – Jan 20' },
+  { id: 1, label: 'Christmas & New Year', season: 'Summer', dateRange: 'Dec 10 – Jan 20' },
   { id: 2, label: 'Sri Lankan New Year', season: 'Sri Lankan New Year', dateRange: 'Apr 5 – Apr 20' },
 ];
 
