@@ -1,11 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
 const { startScheduler, runScrape, getStatus, setSocketServer } = require('./scheduler');
-const { readFlights } = require('./db');
+const { readFlights, getScanCount } = require('./db');
 const { getWindow1, getWindow2 } = require('./dateWindows');
 
 const app = express();
@@ -19,7 +18,6 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 3001;
 
-// Pass socket server to scheduler so it can emit events
 setSocketServer(io);
 
 app.use(cors({
@@ -29,7 +27,6 @@ app.use(express.json());
 
 io.on('connection', (socket) => {
   console.log('[Socket] Client connected:', socket.id);
-  // Send current status immediately on connect
   socket.emit('status', getStatus());
   socket.on('disconnect', () => {
     console.log('[Socket] Client disconnected:', socket.id);
@@ -37,9 +34,11 @@ io.on('connection', (socket) => {
 });
 
 // GET /api/status
-app.get('/api/status', (_req, res) => {
+app.get('/api/status', async (_req, res) => {
+  const scanCount = await getScanCount();
   res.json({
     ...getStatus(),
+    scanCount,
     windows: [getWindow1(), getWindow2()].map(w => ({
       id: w.id,
       label: w.label,
@@ -113,8 +112,6 @@ app.post('/api/scrape', (_req, res) => {
   res.json({ message: 'Scrape started' });
   runScrape();
 });
-
-// Serve built frontend in production
 
 server.listen(PORT, () => {
   console.log(`[Server] Farefox running on http://localhost:${PORT}`);
