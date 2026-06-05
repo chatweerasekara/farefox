@@ -28,55 +28,65 @@ app.get('/api/status', (_req, res) => {
 });
 
 // GET /api/flights/latest?window=1|2
-app.get('/api/flights/latest', (req, res) => {
-  const wid = parseInt(req.query.window) || 1;
-  const flights = readFlights(wid);
-  if (!flights.length) return res.json([]);
-
-  const latestTs = flights.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
-  const latestFlights = flights.filter(f => f.timestamp === latestTs);
-const seen = new Map();
-for (const f of latestFlights) {
-  const key = `${f.departure_date}-${f.airline}-${f.departure_time}`;
-  if (!seen.has(key)) seen.set(key, f);
-}
-const latest = [...seen.values()].sort((a, b) => a.price_aud - b.price_aud);
-res.json(latest);
+app.get('/api/flights/latest', async (req, res) => {
+  try {
+    const wid = parseInt(req.query.window) || 1;
+    const flights = await readFlights(wid);
+    if (!flights.length) return res.json([]);
+    const latestTs = flights.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
+    const latestFlights = flights.filter(f => f.timestamp === latestTs);
+    const seen = new Map();
+    for (const f of latestFlights) {
+      const key = `${f.departure_date}-${f.airline}-${f.departure_time}`;
+      if (!seen.has(key)) seen.set(key, f);
+    }
+    const latest = [...seen.values()].sort((a, b) => a.price_aud - b.price_aud);
+    res.json(latest);
+  } catch (err) {
+    console.error('[API] flights/latest error:', err.message);
+    res.json([]);
+  }
 });
 
 // GET /api/history?window=1|2
-app.get('/api/history', (req, res) => {
-  const wid = parseInt(req.query.window) || 1;
-  const flights = readFlights(wid);
-
-  const byDate = {};
-  for (const f of flights) {
-    const d = f.timestamp.split('T')[0];
-    if (!(d in byDate) || f.price_aud < byDate[d]) byDate[d] = f.price_aud;
+app.get('/api/history', async (req, res) => {
+  try {
+    const wid = parseInt(req.query.window) || 1;
+    const flights = await readFlights(wid);
+    const byDate = {};
+    for (const f of flights) {
+      const d = f.timestamp.split('T')[0];
+      if (!(d in byDate) || f.price_aud < byDate[d]) byDate[d] = f.price_aud;
+    }
+    const history = Object.entries(byDate)
+      .map(([date, minPrice]) => ({ date, minPrice }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+    res.json(history);
+  } catch (err) {
+    console.error('[API] history error:', err.message);
+    res.json([]);
   }
-
-  const history = Object.entries(byDate)
-    .map(([date, minPrice]) => ({ date, minPrice }))
-    .sort((a, b) => a.date.localeCompare(b.date));
-
-  res.json(history);
 });
 
-// GET /api/alerts  (across both windows, latest scrape only)
-app.get('/api/alerts', (_req, res) => {
-  const threshold = parseFloat(process.env.PRICE_ALERT_THRESHOLD ?? 1100);
-  const flights = [...readFlights(1), ...readFlights(2)];
-  if (!flights.length) return res.json([]);
-
-  const latestTs = flights.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
-  const alerts = flights
-    .filter(f => f.timestamp === latestTs && f.price_aud > 0 && f.price_aud < threshold)
-    .sort((a, b) => a.price_aud - b.price_aud);
-
-  res.json(alerts);
+// GET /api/alerts
+app.get('/api/alerts', async (_req, res) => {
+  try {
+    const threshold = parseFloat(process.env.PRICE_ALERT_THRESHOLD ?? 1100);
+    const [f1, f2] = await Promise.all([readFlights(1), readFlights(2)]);
+    const flights = [...f1, ...f2];
+    if (!flights.length) return res.json([]);
+    const latestTs = flights.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
+    const alerts = flights
+      .filter(f => f.timestamp === latestTs && f.price_aud > 0 && f.price_aud < threshold)
+      .sort((a, b) => a.price_aud - b.price_aud);
+    res.json(alerts);
+  } catch (err) {
+    console.error('[API] alerts error:', err.message);
+    res.json([]);
+  }
 });
 
-// POST /api/scrape  (manual trigger — responds immediately, runs async)
+// POST /api/scrape
 app.post('/api/scrape', (_req, res) => {
   res.json({ message: 'Scrape started' });
   runScrape();
