@@ -59,7 +59,7 @@ export default function HeroStat({ price, window, windowMeta, loading, history }
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full" style={trendStyles[trend.type]}>
                 {trendLabel[trend.type]}
               </span>
-              <span className="text-xs" style={{color: '#555'}}>vs previous scan</span>
+              <span className="text-xs" style={{color: '#555'}}>vs yesterday</span>
             </div>
           )}
 
