@@ -278,8 +278,8 @@ function AboutPage({ status, isAdmin }) {
           <div className="flex items-center justify-between px-5 py-3.5">
             <span className="text-xs text-gray-400">Airlines</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: '#003875', color: '#FFD700' }}>UL</span>
               <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: '#FF5A00', color: '#fff' }}>JQ</span>
+              <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: '#003875', color: '#FFD700' }}>UL</span>
             </div>
           </div>
           <div className="flex items-center justify-between px-5 py-3.5">
