@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { io } from 'socket.io-client';
 import HeroStat from './components/HeroStat';
 import AlertBanner from './components/AlertBanner';
 import DateWindowTabs from './components/DateWindowTabs';
@@ -12,24 +13,14 @@ const WINDOWS = [
   { id: 2, label: 'Sri Lankan New Year', season: 'Autumn', dateRange: 'Apr 5 – Apr 20' },
 ];
 
-function RadarOverlay({ scraping }) {
-  const [step, setStep] = useState(0);
-
-  useEffect(() => {
-    if (!scraping) { setStep(0); return; }
-    // Step 0 → 1 after ~12s (window 1 done), step 1 → 2 after ~22s (window 2 done)
-    const t1 = setTimeout(() => setStep(1), 12000);
-    const t2 = setTimeout(() => setStep(2), 22000);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [scraping]);
+function RadarOverlay({ scraping, scanStep }) {
+  const statusItems = [
+    { label: 'Christmas & New Year window', done: scanStep >= 1 },
+    { label: 'Sri Lankan New Year window', done: scanStep >= 2 },
+    { label: 'Checking alerts', done: scanStep === 'done' },
+  ];
 
   if (!scraping) return null;
-
-  const statusItems = [
-    { label: 'Christmas & New Year window', done: step >= 1 },
-    { label: 'Sri Lankan New Year window', done: step >= 2 },
-    { label: 'Checking alerts', done: false },
-  ];
 
   return (
     <div style={{
@@ -55,35 +46,24 @@ function RadarOverlay({ scraping }) {
         maxWidth: 360,
         margin: '0 16px',
       }}>
-
         {/* Radar */}
         <div style={{position: 'relative', width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           {[0, 1, 2].map(i => (
             <div key={i} style={{
-              position: 'absolute',
-              width: 120, height: 120,
-              borderRadius: '50%',
-              border: '1px solid #C17B2A',
+              position: 'absolute', width: 120, height: 120,
+              borderRadius: '50%', border: '1px solid #C17B2A',
               animation: `radarExpand 2s ease-out ${i * 0.65}s infinite`,
             }}/>
           ))}
           <div style={{
-            position: 'absolute',
-            width: 60, height: 60,
-            borderRadius: '50%',
+            position: 'absolute', width: 60, height: 60, borderRadius: '50%',
             background: 'conic-gradient(from 0deg, transparent 70%, rgba(193,123,42,0.45) 100%)',
             animation: 'radarSweep 2s linear infinite',
           }}/>
           <div style={{
-            position: 'absolute',
-            width: 60, height: 60,
-            borderRadius: '50%',
-            background: 'rgba(193,123,42,0.08)',
-            border: '1.5px solid rgba(193,123,42,0.35)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 24,
+            position: 'absolute', width: 60, height: 60, borderRadius: '50%',
+            background: 'rgba(193,123,42,0.08)', border: '1.5px solid rgba(193,123,42,0.35)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24,
           }}>🦊</div>
           {[
             {top: '16%', right: '14%', delay: '0.3s'},
@@ -91,9 +71,7 @@ function RadarOverlay({ scraping }) {
             {top: '52%', left: '10%', delay: '1.5s'},
           ].map((b, i) => (
             <div key={i} style={{
-              position: 'absolute',
-              width: 5, height: 5,
-              borderRadius: '50%',
+              position: 'absolute', width: 5, height: 5, borderRadius: '50%',
               background: '#C17B2A',
               top: b.top, right: b.right, bottom: b.bottom, left: b.left,
               animation: `blipPulse 2s ease-in-out ${b.delay} infinite`,
@@ -103,9 +81,7 @@ function RadarOverlay({ scraping }) {
 
         {/* Text */}
         <div style={{textAlign: 'center'}}>
-          <p style={{color: '#fff', fontWeight: 500, fontSize: 15}}>
-            Scanning for fares…
-          </p>
+          <p style={{color: '#fff', fontWeight: 500, fontSize: 15}}>Scanning for fares…</p>
           <p style={{color: '#C17B2A', fontWeight: 500, fontSize: 13, marginTop: 6}}>MEL → CMB</p>
           <p style={{color: '#555', fontSize: 12, marginTop: 4}}>Checking Jetstar & SriLankan Airlines</p>
         </div>
@@ -113,33 +89,37 @@ function RadarOverlay({ scraping }) {
         {/* Progress bar */}
         <div style={{width: '100%', height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden'}}>
           <div style={{
-            height: '100%',
+            height: '100%', borderRadius: 3,
             background: 'linear-gradient(90deg,#C17B2A,#E8973A)',
-            borderRadius: 3,
             animation: 'progressScan 24s ease-in-out forwards',
           }}/>
         </div>
 
         {/* Status list */}
         <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 8}}>
-          {statusItems.map((item, i) => (
-            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
-              <div style={{
-                width: 6, height: 6,
-                borderRadius: '50%',
-                flexShrink: 0,
-                background: item.done ? '#22c55e' : (i === step ? '#C17B2A' : '#333'),
-                animation: !item.done && i === step ? 'activePulse 1s ease-in-out infinite' : 'none',
-              }}/>
-              <span style={{
-                fontSize: 11,
-                color: item.done ? '#555' : (i === step ? '#C17B2A' : '#333'),
-                fontWeight: i === step && !item.done ? 500 : 400,
-              }}>
-                {item.label}{item.done ? ' ✓' : (i === step ? '…' : '')}
-              </span>
-            </div>
-          ))}
+          {statusItems.map((item, i) => {
+            const isActive = !item.done && (
+              (i === 0 && scanStep === 0) ||
+              (i === 1 && scanStep === 1) ||
+              (i === 2 && scanStep === 2)
+            );
+            return (
+              <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                <div style={{
+                  width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+                  background: item.done ? '#22c55e' : (isActive ? '#C17B2A' : '#333'),
+                  animation: isActive ? 'activePulse 1s ease-in-out infinite' : 'none',
+                }}/>
+                <span style={{
+                  fontSize: 11,
+                  color: item.done ? '#555' : (isActive ? '#C17B2A' : '#333'),
+                  fontWeight: isActive ? 500 : 400,
+                }}>
+                  {item.label}{item.done ? ' ✓' : (isActive ? '…' : '')}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -154,8 +134,12 @@ export default function App() {
   const [status, setStatus]             = useState(null);
   const [loading, setLoading]           = useState(true);
   const [scraping, setScraping]         = useState(false);
+  const [scanStep, setScanStep]         = useState(0);
   const [windowMeta, setWindowMeta]     = useState(null);
   const [windows, setWindows]           = useState(WINDOWS);
+  const activeWindowRef = useRef(activeWindow);
+
+  useEffect(() => { activeWindowRef.current = activeWindow; }, [activeWindow]);
 
   const fetchData = useCallback(async (windowId) => {
     setLoading(true);
@@ -188,24 +172,37 @@ export default function App() {
 
   useEffect(() => { fetchData(activeWindow); }, [activeWindow, fetchData]);
 
+  // WebSocket connection
+  useEffect(() => {
+    const socket = io(API, { transports: ['websocket', 'polling'] });
+
+    socket.on('connect', () => {
+      console.log('[Socket] Connected');
+    });
+
+    socket.on('status', (data) => {
+      setScraping(data.isRunning);
+      if (data.scanStep !== undefined) setScanStep(data.scanStep);
+      // When scan completes, refresh data for all users
+      if (data.scanStep === 'done') {
+        setScanStep(0);
+        fetchData(activeWindowRef.current);
+      }
+    });
+
+    socket.on('disconnect', () => {
+      console.log('[Socket] Disconnected');
+    });
+
+    return () => socket.disconnect();
+  }, [fetchData]);
+
   const handleScrape = async () => {
-    setScraping(true);
     try {
       await fetch(`${API}/api/scrape`, { method: 'POST' });
-      let attempts = 0;
-      const poll = setInterval(async () => {
-        attempts++;
-        const res = await fetch(`${API}/api/status`);
-        const s   = await res.json();
-        setStatus(s);
-        if (!s.isRunning || attempts > 60) {
-          clearInterval(poll);
-          setScraping(false);
-          fetchData(activeWindow);
-        }
-      }, 5000);
-    } catch {
-      setScraping(false);
+      // scraping state now driven by socket events
+    } catch (err) {
+      console.error('Scrape error:', err);
     }
   };
 
@@ -214,7 +211,7 @@ export default function App() {
 
   return (
     <>
-      <RadarOverlay scraping={scraping} />
+      <RadarOverlay scraping={scraping} scanStep={scanStep} />
 
       <div className="min-h-screen bg-gray-50">
         <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
@@ -263,13 +260,13 @@ export default function App() {
               )}
               <button
                 onClick={handleScrape}
-                disabled={scraping || status?.isRunning}
+                disabled={scraping}
                 className="text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 style={scraping
                   ? {background: 'rgba(193,123,42,0.12)', color: '#C17B2A', border: '1px solid rgba(193,123,42,0.3)'}
                   : {background: '#C17B2A', color: '#fff', border: 'none'}}
               >
-                {scraping || status?.isRunning ? (
+                {scraping ? (
                   <span className="flex items-center gap-2">
                     <span className="w-3 h-3 border-2 border-t-transparent rounded-full animate-spin"
                       style={{borderColor: 'rgba(193,123,42,0.3)', borderTopColor: '#C17B2A'}}/>
