@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { startScheduler, runScrape, getStatus } = require('./scheduler');
-const { readFlights } = require('./csv');
+const { readFlights } = require('./db');
 const { getWindow1, getWindow2 } = require('./dateWindows');
 
 const app = express();
