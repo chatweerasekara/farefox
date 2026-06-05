@@ -4,7 +4,7 @@ const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
 const { startScheduler, runScrape, getStatus, setSocketServer } = require('./scheduler');
-const { readFlights, getScanCount } = require('./db');
+const { readFlights, getScanCount, addSubscriber } = require('./db');
 const { getWindow1, getWindow2 } = require('./dateWindows');
 
 const app = express();
@@ -104,6 +104,26 @@ app.get('/api/alerts', async (_req, res) => {
   } catch (err) {
     console.error('[API] alerts error:', err.message);
     res.json([]);
+  }
+});
+
+// POST /api/subscribe
+app.post('/api/subscribe', async (req, res) => {
+  const { email, threshold, window_1, window_2 } = req.body;
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Valid email required' });
+  }
+  try {
+    const subscriber = await addSubscriber({
+      email: email.toLowerCase().trim(),
+      threshold: parseInt(threshold) || 1100,
+      window_1: window_1 !== false,
+      window_2: window_2 !== false,
+    });
+    res.json({ success: true, subscriber });
+  } catch (err) {
+    console.error('[API] subscribe error:', err.message);
+    res.status(500).json({ error: 'Failed to subscribe' });
   }
 });
 
