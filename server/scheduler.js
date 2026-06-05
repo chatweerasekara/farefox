@@ -69,7 +69,7 @@ const bookUrl = `https://www.skyscanner.com.au/transport/flights/mel/cmb/${depDa
 }
 
 function startScheduler() {
-  cron.schedule('0 8 * * *', () => {
+cron.schedule('0 8,18 * * *', () => {
     console.log('[Scheduler] Cron fired — 08:00 Melbourne daily scrape');
     runScrape();
   }, { timezone: 'Australia/Melbourne' });
