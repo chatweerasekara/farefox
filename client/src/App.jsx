@@ -190,54 +190,155 @@ function AlertsPage() {
 }
 
 // ── About Page ─────────────────────────────────────────────────────────────────
-function AboutPage({ status }) {
+function AboutPage({ status, isAdmin }) {
   return (
     <div className="max-w-5xl mx-auto px-6 py-8 space-y-4">
-      <div className="flex flex-col items-center py-6">
+
+      {/* Logo block */}
+      <div className="flex flex-col items-center py-4">
         <div className="leading-none mb-1">
           <span className="text-2xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
           <span className="text-2xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
         </div>
-        <p className="text-xs text-gray-400">Your family's flight radar</p>
-        <p className="text-xs text-gray-300 mt-1">v1.0.0</p>
+        <p className="text-xs text-gray-400 mt-1">Your family's flight radar</p>
+        <p className="text-xs text-gray-300 mt-0.5">v1.0.0</p>
       </div>
-      <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
-        {[
-          { label: 'Route', value: 'Melbourne → Colombo' },
-          { label: 'Airlines tracked', value: 'Jetstar (JQ) · SriLankan (UL)' },
-          { label: 'Scan schedule', value: '8:00 am & 6:00 pm daily' },
-          { label: 'Alert threshold', value: 'Below A$1,100' },
-          { label: 'Fare type', value: 'One-way only' },
-        ].map(({ label, value }) => (
-          <div key={label} className="flex items-center justify-between px-5 py-3.5">
-            <span className="text-xs text-gray-400">{label}</span>
-            <span className="text-xs font-medium text-gray-800">{value}</span>
+
+      {/* Last scan + total scans */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 flex items-center justify-between">
+        <div>
+          <p className="text-xs text-gray-400">Last scan</p>
+          <p className="text-sm font-medium text-gray-900 mt-0.5">
+            {status?.lastRun
+              ? new Date(status.lastRun).toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' })
+              : '—'}
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-xs text-gray-400">Total scans</p>
+          <p className="text-sm font-medium mt-0.5" style={{ color: '#C17B2A' }}>
+            {status?.scanCount ?? '—'} completed
+          </p>
+        </div>
+      </div>
+
+      {/* How it works */}
+      <div>
+        <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-3">How it works</p>
+        <div className="bg-white rounded-2xl border border-gray-100 p-5">
+          <div className="flex items-center justify-between gap-2">
+            {[
+              { icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C17B2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="2"/><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 6a6 6 0 0 1 6 6"/><path d="M12 10a2 2 0 0 1 2 2"/>
+                </svg>
+              ), title: 'Scans daily', sub: '8am & 6pm' },
+              { icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C17B2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              ), title: 'Finds cheapest', sub: 'JQ & UL only' },
+              { icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C17B2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              ), title: 'Alerts you', sub: 'Below A$1,100' },
+            ].map(({ icon, title, sub }, i, arr) => (
+              <div key={title} className="flex items-center gap-2 flex-1">
+                <div className="flex flex-col items-center gap-2 flex-1">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(193,123,42,0.1)' }}>
+                    {icon}
+                  </div>
+                  <p className="text-xs font-medium text-gray-800 text-center">{title}</p>
+                  <p className="text-xs text-gray-400 text-center">{sub}</p>
+                </div>
+                {i < arr.length - 1 && (
+                  <span className="text-gray-200 text-sm flex-shrink-0">→</span>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
-        {status?.lastRun && (
+        </div>
+      </div>
+
+      {/* Coverage */}
+      <div>
+        <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-3">Coverage</p>
+        <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+          {[
+            { label: 'Route', value: 'Melbourne → Colombo' },
+            { label: 'Fare type', value: 'One-way · Economy' },
+            { label: 'Scan schedule', value: '8:00 am & 6:00 pm daily' },
+          ].map(({ label, value }) => (
+            <div key={label} className="flex items-center justify-between px-5 py-3.5">
+              <span className="text-xs text-gray-400">{label}</span>
+              <span className="text-xs font-medium text-gray-800">{value}</span>
+            </div>
+          ))}
           <div className="flex items-center justify-between px-5 py-3.5">
-            <span className="text-xs text-gray-400">Last scan</span>
-            <span className="text-xs font-medium text-gray-800">
-              {new Date(status.lastRun).toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' })}
-            </span>
+            <span className="text-xs text-gray-400">Airlines</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: '#003875', color: '#FFD700' }}>UL</span>
+              <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: '#FF5A00', color: '#fff' }}>JQ</span>
+            </div>
           </div>
-        )}
-      </div>
-      <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
-        {[
-          { label: 'Frontend', value: 'React + Vite · Vercel' },
-          { label: 'Backend', value: 'Node.js + Express · Railway' },
-          { label: 'Database', value: 'Supabase (PostgreSQL)' },
-          { label: 'Flight data', value: 'RapidAPI · Flights Sky Scraper' },
-          { label: 'Alerts', value: 'Callmebot WhatsApp' },
-        ].map(({ label, value }) => (
-          <div key={label} className="flex items-center justify-between px-5 py-3.5">
-            <span className="text-xs text-gray-400">{label}</span>
-            <span className="text-xs font-medium text-gray-800">{value}</span>
+          <div className="flex items-center justify-between px-5 py-3.5">
+            <span className="text-xs text-gray-400">Alert threshold</span>
+            <span className="text-xs font-medium" style={{ color: '#C17B2A' }}>Below A$1,100</span>
           </div>
-        ))}
+          <div className="flex items-center justify-between px-5 py-3.5">
+            <span className="text-xs text-gray-400">Windows tracked</span>
+            <span className="text-xs font-medium text-gray-800">Dec–Jan · Apr</span>
+          </div>
+        </div>
       </div>
-      <p className="text-center text-xs text-gray-300 pb-4">Built by Chat · Melbourne, Australia</p>
+
+      {/* What's a good fare */}
+      <div className="rounded-2xl p-4" style={{ background: 'rgba(193,123,42,0.06)', border: '0.5px solid rgba(193,123,42,0.2)' }}>
+        <p className="text-xs font-medium mb-1.5" style={{ color: '#C17B2A' }}>💡 What's a good fare?</p>
+        <div className="space-y-1">
+          {[
+            { range: 'Under A$1,000', label: 'Excellent — book it' },
+            { range: 'A$1,000 – A$1,100', label: 'Good value' },
+            { range: 'Above A$1,100', label: 'Keep watching' },
+          ].map(({ range, label }) => (
+            <div key={range} className="flex items-center justify-between">
+              <span className="text-xs font-medium" style={{ color: '#7a5020' }}>{range}</span>
+              <span className="text-xs" style={{ color: '#a0784a' }}>{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Stack info — admin only */}
+      {isAdmin && (
+        <div>
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-3">Stack</p>
+          <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+            {[
+              { label: 'Frontend', value: 'React + Vite · Vercel' },
+              { label: 'Backend', value: 'Node.js + Express · Railway' },
+              { label: 'Database', value: 'Supabase (PostgreSQL)' },
+              { label: 'Flight data', value: 'RapidAPI · Flights Sky Scraper' },
+              { label: 'Alerts', value: 'Callmebot WhatsApp' },
+            ].map(({ label, value }) => (
+              <div key={label} className="flex items-center justify-between px-5 py-3.5">
+                <span className="text-xs text-gray-400">{label}</span>
+                <span className="text-xs font-medium text-gray-800">{value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Disclaimer + built by */}
+      <div className="pb-4 space-y-1.5">
+        <p className="text-center text-xs text-gray-400">
+          Fares are indicative only. Always confirm pricing on Skyscanner or the airline's website before booking.
+        </p>
+        <p className="text-center text-xs text-gray-300">Built by Chat · Melbourne, Australia</p>
+      </div>
+
     </div>
   );
 }
@@ -504,7 +605,7 @@ export default function App() {
               history1={history1} history2={history2} status={status} />
           )}
           {activePage === 'alerts' && <AlertsPage />}
-          {activePage === 'about' && <AboutPage status={status} />}
+          {activePage === 'about' && <AboutPage status={status} isAdmin={isAdmin} />}
         </div>
       </div>
 
