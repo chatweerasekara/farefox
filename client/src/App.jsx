@@ -169,22 +169,146 @@ function WindowsPage({ windows, flights1, flights2, history1, history2, status }
   );
 }
 
-// ── Alerts Page (stub) ─────────────────────────────────────────────────────────
+// ── Alerts Page ────────────────────────────────────────────────────────────────
 function AlertsPage() {
-  return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
-      <div className="bg-white rounded-2xl border border-gray-100 p-8 flex flex-col items-center justify-center text-center" style={{ minHeight: 280 }}>
-        <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: 'rgba(193,123,42,0.1)' }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C17B2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
+  const [email, setEmail]         = useState('');
+  const [threshold, setThreshold] = useState(1100);
+  const [window1, setWindow1]     = useState(true);
+  const [window2, setWindow2]     = useState(true);
+  const [loading, setLoading]     = useState(false);
+  const [success, setSuccess]     = useState(false);
+  const [error, setError]         = useState('');
+
+  const handleSubmit = async () => {
+    setError('');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    if (!window1 && !window2) {
+      setError('Please select at least one travel window.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/api/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, threshold, window_1: window1, window_2: window2 }),
+      });
+      if (!res.ok) throw new Error('Failed to subscribe');
+      setSuccess(true);
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="bg-white rounded-2xl border border-gray-100 p-10 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: 'rgba(34,197,94,0.1)' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium text-gray-800 mb-1">You're subscribed</p>
+          <p className="text-xs text-gray-400 max-w-xs">
+            You'll receive an email when MEL→CMB fares drop below A${threshold.toLocaleString()}.
+          </p>
+          <button onClick={() => setSuccess(false)}
+            className="mt-5 text-xs px-4 py-2 rounded-lg border border-gray-100 text-gray-400 hover:text-gray-600 transition-all">
+            Update preferences
+          </button>
         </div>
-        <p className="text-sm font-medium text-gray-700 mb-1">Email alerts coming soon</p>
-        <p className="text-xs text-gray-400 max-w-xs">
-          You'll be able to subscribe with your email and get notified when fares drop below your threshold.
-        </p>
       </div>
+    );
+  }
+
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-8 space-y-4">
+      <p className="text-xs font-medium text-gray-400 uppercase tracking-widest">Email alerts</p>
+
+      {/* Email input */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 space-y-3">
+        <div>
+          <label className="text-xs text-gray-400 block mb-1.5">Your email address</label>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="w-full text-sm px-4 py-2.5 rounded-xl border border-gray-100 bg-gray-50 text-gray-800 placeholder-gray-300 focus:outline-none focus:border-amber-300 transition-all"
+            style={{ fontFamily: 'inherit' }}
+          />
+        </div>
+      </div>
+
+      {/* Threshold */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-5">
+        <div className="flex items-center justify-between mb-3">
+          <label className="text-xs text-gray-400">Alert me when fares drop below</label>
+          <span className="text-sm font-medium" style={{ color: '#C17B2A' }}>A${threshold.toLocaleString()}</span>
+        </div>
+        <input
+          type="range"
+          min={700} max={1500} step={50}
+          value={threshold}
+          onChange={e => setThreshold(parseInt(e.target.value))}
+          className="w-full"
+          style={{ accentColor: '#C17B2A' }}
+        />
+        <div className="flex justify-between mt-1">
+          <span className="text-xs text-gray-300">A$700</span>
+          <span className="text-xs text-gray-300">A$1,500</span>
+        </div>
+      </div>
+
+      {/* Window toggles */}
+      <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+        <div className="flex items-center justify-between px-5 py-4">
+          <div>
+            <p className="text-sm font-medium text-gray-800">Christmas & New Year</p>
+            <p className="text-xs text-gray-400 mt-0.5">Dec 10 – Jan 20 · Summer</p>
+          </div>
+          <button onClick={() => setWindow1(v => !v)}
+            className="relative flex-shrink-0 w-10 h-6 rounded-full transition-all"
+            style={{ background: window1 ? '#C17B2A' : '#e5e5e3' }}>
+            <span className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all"
+              style={{ left: window1 ? '22px' : '2px' }} />
+          </button>
+        </div>
+        <div className="flex items-center justify-between px-5 py-4">
+          <div>
+            <p className="text-sm font-medium text-gray-800">Sri Lankan New Year</p>
+            <p className="text-xs text-gray-400 mt-0.5">Apr 5 – Apr 20 · Autumn</p>
+          </div>
+          <button onClick={() => setWindow2(v => !v)}
+            className="relative flex-shrink-0 w-10 h-6 rounded-full transition-all"
+            style={{ background: window2 ? '#C17B2A' : '#e5e5e3' }}>
+            <span className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all"
+              style={{ left: window2 ? '22px' : '2px' }} />
+          </button>
+        </div>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <p className="text-xs text-red-400 px-1">{error}</p>
+      )}
+
+      {/* Submit */}
+      <button onClick={handleSubmit} disabled={loading}
+        className="w-full py-3 rounded-2xl text-sm font-medium text-white transition-all active:scale-95 disabled:opacity-50"
+        style={{ background: '#C17B2A' }}>
+        {loading ? 'Subscribing…' : 'Subscribe to alerts'}
+      </button>
+
+      <p className="text-center text-xs text-gray-300 pb-4">
+        You'll receive an email after each scan when fares drop below your threshold.
+      </p>
     </div>
   );
 }
@@ -237,7 +361,7 @@ function AboutPage({ status, isAdmin }) {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C17B2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
-              ), title: 'Finds cheapest', sub: 'Jetstar & SriLankan Airlines only' },
+              ), title: 'Finds cheapest', sub: 'JQ & UL only' },
               { icon: (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C17B2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -278,8 +402,8 @@ function AboutPage({ status, isAdmin }) {
           <div className="flex items-center justify-between px-5 py-3.5">
             <span className="text-xs text-gray-400">Airlines</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: '#FF5A00', color: '#fff' }}>JQ</span>
               <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: '#003875', color: '#FFD700' }}>UL</span>
+              <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: '#FF5A00', color: '#fff' }}>JQ</span>
             </div>
           </div>
           <div className="flex items-center justify-between px-5 py-3.5">
