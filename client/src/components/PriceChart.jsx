@@ -50,7 +50,10 @@ export default function PriceChart({ history, loading }) {
               axisLine={false}
               tickLine={false}
               tickFormatter={v => `$${v}`}
-              domain={['auto', 'auto']}
+              domain={([dataMin, dataMax]) => {
+  const padding = Math.max((dataMax - dataMin) * 0.3, 50);
+  return [Math.max(0, Math.floor(dataMin - padding)), Math.ceil(dataMax + padding)];
+}}
               width={45}
             />
             <Tooltip content={<CustomTooltip />} />
