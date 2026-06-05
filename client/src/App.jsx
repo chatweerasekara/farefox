@@ -17,12 +17,10 @@ function RadarOverlay({ scraping }) {
 
   useEffect(() => {
     if (!scraping) { setStep(0); return; }
-    let i = 0;
-    const t = setInterval(() => {
-      i = (i + 1) % 3;
-      setStep(i);
-    }, 6000);
-    return () => clearInterval(t);
+    // Step 0 → 1 after ~12s (window 1 done), step 1 → 2 after ~22s (window 2 done)
+    const t1 = setTimeout(() => setStep(1), 12000);
+    const t2 = setTimeout(() => setStep(2), 22000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [scraping]);
 
   if (!scraping) return null;
