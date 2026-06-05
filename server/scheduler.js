@@ -23,7 +23,7 @@ function buildBookUrl(departure_date) {
   return `https://www.skyscanner.com.au/transport/flights/mel/cmb/${depDate}/?adults=1&cabinclass=economy&rtn=0&currency=AUD`;
 }
 
-function buildEmailHtml({ flights, windowLabel, threshold }) {
+function buildEmailHtml({ flights, windowLabel, threshold, email }) {
   const rows = flights.slice(0, 5).map(f => {
     const dur = `${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m`;
     const bookUrl = buildBookUrl(f.departure_date);
@@ -82,7 +82,7 @@ function buildEmailHtml({ flights, windowLabel, threshold }) {
           </p>
           <p style="margin:6px 0 0; font-size:11px; color:#ccc;">
             You're receiving this because you subscribed to Farefox alerts. &nbsp;
-            <a href="https://farefox-production.up.railway.app/api/unsubscribe?email=${subscriber.email}" style="color:#C17B2A; text-decoration:none;">Unsubscribe</a>
+            <a href="https://farefox-production.up.railway.app/api/unsubscribe?email=${encodeURIComponent(email)}" style="color:#C17B2A; text-decoration:none;">Unsubscribe</a>
           </p>
         </div>
 
@@ -117,7 +117,7 @@ async function sendEmailAlerts(allFlights) {
           from: 'Farefox <onboarding@resend.dev>',
           to: subscriber.email,
           subject: `🦊 MEL→CMB fares below A$${subThreshold} — ${win.label}`,
-          html: buildEmailHtml({ flights, windowLabel: win.label, threshold: subThreshold }),
+          html: buildEmailHtml({ flights, windowLabel: win.label, threshold: subThreshold, email: subscriber.email }),
         });
         console.log(`[Email] Sent alert to ${subscriber.email} for ${win.label}`);
       } catch (err) {
