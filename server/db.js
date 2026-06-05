@@ -80,4 +80,15 @@ async function getSubscribers() {
   return data;
 }
 
-module.exports = { appendFlights, readFlights, getScanCount, addSubscriber, getSubscribers };
+async function removeSubscriber(email) {
+  const { error } = await supabase
+    .from('subscribers')
+    .delete()
+    .eq('email', email.toLowerCase().trim());
+  if (error) {
+    console.error('[DB] Unsubscribe error:', error.message);
+    throw error;
+  }
+}
+
+module.exports = { appendFlights, readFlights, getScanCount, addSubscriber, getSubscribers, removeSubscriber };
