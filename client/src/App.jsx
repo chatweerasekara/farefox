@@ -254,7 +254,7 @@ export default function App() {
               <span className="text-xs font-medium text-gray-400 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-full hidden sm:block">
                 MEL → CMB
               </span>
-              {status && (
+              {status && isAdmin && (
                 <span className="text-xs text-gray-400 hidden sm:block">
                   {scraping
                     ? 'Scanning MEL → CMB…'
