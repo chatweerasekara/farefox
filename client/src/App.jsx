@@ -210,7 +210,7 @@ export default function App() {
       console.error('Scrape error:', err);
     }
   };
-
+  const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
   const heroPrice = flights.length > 0 ? Math.min(...flights.map(f => f.price_aud)) : null;
   const activeWin = windows.find(w => w.id === activeWindow);
 
@@ -263,22 +263,24 @@ export default function App() {
                       : 'Never scanned'}
                 </span>
               )}
-              <button
-                onClick={handleScrape}
-                disabled={scraping}
-                className="text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                style={scraping
-                  ? {background: 'rgba(193,123,42,0.12)', color: '#C17B2A', border: '1px solid rgba(193,123,42,0.3)'}
-                  : {background: '#C17B2A', color: '#fff', border: 'none'}}
-              >
-                {scraping ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-3 h-3 border-2 border-t-transparent rounded-full animate-spin"
-                      style={{borderColor: 'rgba(193,123,42,0.3)', borderTopColor: '#C17B2A'}}/>
-                    Scanning…
-                  </span>
-                ) : 'Scan Now'}
-              </button>
+              {isAdmin && (
+  <button
+    onClick={handleScrape}
+    disabled={scraping}
+    className="text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+    style={scraping
+      ? {background: 'rgba(193,123,42,0.12)', color: '#C17B2A', border: '1px solid rgba(193,123,42,0.3)'}
+      : {background: '#C17B2A', color: '#fff', border: 'none'}}
+  >
+    {scraping ? (
+      <span className="flex items-center gap-2">
+        <span className="w-3 h-3 border-2 border-t-transparent rounded-full animate-spin"
+          style={{borderColor: 'rgba(193,123,42,0.3)', borderTopColor: '#C17B2A'}}/>
+        Scanning…
+      </span>
+    ) : 'Scan Now'}
+  </button>
+)}
             </div>
           </div>
         </header>
