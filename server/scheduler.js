@@ -81,7 +81,8 @@ function buildEmailHtml({ flights, windowLabel, threshold }) {
             Fares are indicative only. Always confirm on Skyscanner or the airline's website before booking.
           </p>
           <p style="margin:6px 0 0; font-size:11px; color:#ccc;">
-            You're receiving this because you subscribed to Farefox alerts.
+            You're receiving this because you subscribed to Farefox alerts. &nbsp;
+            <a href="https://farefox-production.up.railway.app/api/unsubscribe?email=${subscriber.email}" style="color:#C17B2A; text-decoration:none;">Unsubscribe</a>
           </p>
         </div>
 
