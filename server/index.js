@@ -115,12 +115,6 @@ app.post('/api/scrape', (_req, res) => {
 });
 
 // Serve built frontend in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
-  app.get('*', (_req, res) =>
-    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'))
-  );
-}
 
 server.listen(PORT, () => {
   console.log(`[Server] Farefox running on http://localhost:${PORT}`);
