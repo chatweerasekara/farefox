@@ -13,103 +13,79 @@ const WINDOWS = [
   { id: 2, label: 'Sri Lankan New Year', season: 'Autumn', dateRange: 'Apr 5 – Apr 20' },
 ];
 
+// ── Radar Overlay ─────────────────────────────────────────────────────────────
 function RadarOverlay({ scraping, scanStep }) {
   const statusItems = [
     { label: 'Christmas & New Year window', done: scanStep >= 1 },
     { label: 'Sri Lankan New Year window', done: scanStep >= 2 },
     { label: 'Checking alerts', done: scanStep === 'done' },
   ];
-
   if (!scraping) return null;
-
   return (
     <div style={{
-      position: 'fixed',
-      top: 0, left: 0, right: 0, bottom: 0,
-      zIndex: 99999,
-      background: 'rgba(0,0,0,0.7)',
-      backdropFilter: 'blur(6px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+      zIndex: 99999, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       <div style={{
-        background: '#0a0a0a',
-        border: '0.5px solid #1a1a1a',
-        borderRadius: 20,
-        padding: '40px 40px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 24,
-        width: '100%',
-        maxWidth: 360,
-        margin: '0 16px',
+        background: '#0a0a0a', border: '0.5px solid #1a1a1a', borderRadius: 20,
+        padding: '40px 40px', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', gap: 24, width: '100%', maxWidth: 360, margin: '0 16px',
       }}>
-        {/* Radar */}
-        <div style={{position: 'relative', width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div style={{ position: 'relative', width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {[0, 1, 2].map(i => (
             <div key={i} style={{
-              position: 'absolute', width: 120, height: 120,
-              borderRadius: '50%', border: '1px solid #C17B2A',
+              position: 'absolute', width: 120, height: 120, borderRadius: '50%',
+              border: '1px solid #C17B2A',
               animation: `radarExpand 2s ease-out ${i * 0.65}s infinite`,
-            }}/>
+            }} />
           ))}
           <div style={{
             position: 'absolute', width: 60, height: 60, borderRadius: '50%',
             background: 'conic-gradient(from 0deg, transparent 70%, rgba(193,123,42,0.45) 100%)',
             animation: 'radarSweep 2s linear infinite',
-          }}/>
+          }} />
           <div style={{
             position: 'absolute', width: 60, height: 60, borderRadius: '50%',
             background: 'rgba(193,123,42,0.08)', border: '1.5px solid rgba(193,123,42,0.35)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24,
           }}>🦊</div>
           {[
-            {top: '16%', right: '14%', delay: '0.3s'},
-            {bottom: '18%', left: '14%', delay: '0.9s'},
-            {top: '52%', left: '10%', delay: '1.5s'},
+            { top: '16%', right: '14%', delay: '0.3s' },
+            { bottom: '18%', left: '14%', delay: '0.9s' },
+            { top: '52%', left: '10%', delay: '1.5s' },
           ].map((b, i) => (
             <div key={i} style={{
               position: 'absolute', width: 5, height: 5, borderRadius: '50%',
-              background: '#C17B2A',
-              top: b.top, right: b.right, bottom: b.bottom, left: b.left,
+              background: '#C17B2A', top: b.top, right: b.right, bottom: b.bottom, left: b.left,
               animation: `blipPulse 2s ease-in-out ${b.delay} infinite`,
-            }}/>
+            }} />
           ))}
         </div>
-
-        {/* Text */}
-        <div style={{textAlign: 'center'}}>
-          <p style={{color: '#fff', fontWeight: 500, fontSize: 15}}>Scanning for fares…</p>
-          <p style={{color: '#C17B2A', fontWeight: 500, fontSize: 13, marginTop: 6}}>MEL → CMB</p>
-          <p style={{color: '#555', fontSize: 12, marginTop: 4}}>Checking Jetstar & SriLankan Airlines</p>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ color: '#fff', fontWeight: 500, fontSize: 15 }}>Scanning for fares…</p>
+          <p style={{ color: '#C17B2A', fontWeight: 500, fontSize: 13, marginTop: 6 }}>MEL → CMB</p>
+          <p style={{ color: '#555', fontSize: 12, marginTop: 4 }}>Checking Jetstar & SriLankan Airlines</p>
         </div>
-
-        {/* Progress bar */}
-        <div style={{width: '100%', height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden'}}>
+        <div style={{ width: '100%', height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden' }}>
           <div style={{
             height: '100%', borderRadius: 3,
             background: 'linear-gradient(90deg,#C17B2A,#E8973A)',
             animation: 'progressScan 24s ease-in-out forwards',
-          }}/>
+          }} />
         </div>
-
-        {/* Status list */}
-        <div style={{width: '100%', display: 'flex', flexDirection: 'column', gap: 8}}>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8 }}>
           {statusItems.map((item, i) => {
             const isActive = !item.done && (
-              (i === 0 && scanStep === 0) ||
-              (i === 1 && scanStep === 1) ||
-              (i === 2 && scanStep === 2)
+              (i === 0 && scanStep === 0) || (i === 1 && scanStep === 1) || (i === 2 && scanStep === 2)
             );
             return (
-              <div key={i} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{
                   width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
                   background: item.done ? '#22c55e' : (isActive ? '#C17B2A' : '#333'),
                   animation: isActive ? 'activePulse 1s ease-in-out infinite' : 'none',
-                }}/>
+                }} />
                 <span style={{
                   fontSize: 11,
                   color: item.done ? '#555' : (isActive ? '#C17B2A' : '#333'),
@@ -126,10 +102,235 @@ function RadarOverlay({ scraping, scanStep }) {
   );
 }
 
+// ── Windows Page ───────────────────────────────────────────────────────────────
+function WindowsPage({ windows, flights1, flights2, history1, history2, status }) {
+  const getWindowData = (wid, flights, history) => {
+    const cheapest = flights.length > 0 ? Math.min(...flights.map(f => f.price_aud)) : null;
+    const today = history[history.length - 1]?.minPrice ?? null;
+    const yesterday = history[history.length - 2]?.minPrice ?? null;
+    const diff = today && yesterday ? today - yesterday : null;
+    const win = windows.find(w => w.id === wid);
+    const daysUntil = win?.startDate
+      ? Math.max(0, Math.ceil((new Date(win.startDate) - new Date()) / (1000 * 60 * 60 * 24)))
+      : null;
+    return { cheapest, diff, daysUntil };
+  };
+  const w1 = getWindowData(1, flights1, history1);
+  const w2 = getWindowData(2, flights2, history2);
+  const windowData = [w1, w2];
+
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-8 space-y-4">
+      <p className="text-xs font-medium text-gray-400 uppercase tracking-widest">Travel windows</p>
+      {windows.map((win, i) => {
+        const { cheapest, diff, daysUntil } = windowData[i];
+        return (
+          <div key={win.id} className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-sm font-medium text-gray-900">{win.label}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{win.dateRange}</p>
+              </div>
+              <div className="flex flex-col items-end gap-1.5">
+                <span className="text-xs font-medium" style={{ color: '#C17B2A' }}>{win.season}</span>
+                {daysUntil !== null && (
+                  <span className="text-xs text-white px-2 py-0.5 rounded-full" style={{ background: '#C17B2A' }}>
+                    {daysUntil === 0 ? 'Window open' : `${daysUntil} days`}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-50">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs text-gray-400">Cheapest</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {cheapest ? `A$${cheapest.toLocaleString()}` : '—'}
+                </span>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs text-gray-400">Last scan</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {status?.lastRun
+                    ? new Date(status.lastRun).toLocaleString('en-AU', { dateStyle: 'short', timeStyle: 'short' })
+                    : '—'}
+                </span>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs text-gray-400">Vs yesterday</span>
+                <span className={`text-sm font-medium ${diff === null ? 'text-gray-400' : diff < 0 ? 'text-green-500' : diff > 0 ? 'text-red-400' : 'text-gray-400'}`}>
+                  {diff === null ? '—' : diff < 0 ? `↓ $${Math.abs(diff)}` : diff > 0 ? `↑ $${diff}` : 'No change'}
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Alerts Page (stub) ─────────────────────────────────────────────────────────
+function AlertsPage() {
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="bg-white rounded-2xl border border-gray-100 p-8 flex flex-col items-center justify-center text-center" style={{ minHeight: 280 }}>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: 'rgba(193,123,42,0.1)' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C17B2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+        </div>
+        <p className="text-sm font-medium text-gray-700 mb-1">Email alerts coming soon</p>
+        <p className="text-xs text-gray-400 max-w-xs">
+          You'll be able to subscribe with your email and get notified when fares drop below your threshold.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── About Page ─────────────────────────────────────────────────────────────────
+function AboutPage({ status }) {
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-8 space-y-4">
+      <div className="flex flex-col items-center py-6">
+        <div className="leading-none mb-1">
+          <span className="text-2xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
+          <span className="text-2xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
+        </div>
+        <p className="text-xs text-gray-400">Your family's flight radar</p>
+        <p className="text-xs text-gray-300 mt-1">v1.0.0</p>
+      </div>
+      <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+        {[
+          { label: 'Route', value: 'Melbourne → Colombo' },
+          { label: 'Airlines tracked', value: 'Jetstar (JQ) · SriLankan (UL)' },
+          { label: 'Scan schedule', value: '8:00 am & 6:00 pm daily' },
+          { label: 'Alert threshold', value: 'Below A$1,100' },
+          { label: 'Fare type', value: 'One-way only' },
+        ].map(({ label, value }) => (
+          <div key={label} className="flex items-center justify-between px-5 py-3.5">
+            <span className="text-xs text-gray-400">{label}</span>
+            <span className="text-xs font-medium text-gray-800">{value}</span>
+          </div>
+        ))}
+        {status?.lastRun && (
+          <div className="flex items-center justify-between px-5 py-3.5">
+            <span className="text-xs text-gray-400">Last scan</span>
+            <span className="text-xs font-medium text-gray-800">
+              {new Date(status.lastRun).toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' })}
+            </span>
+          </div>
+        )}
+      </div>
+      <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+        {[
+          { label: 'Frontend', value: 'React + Vite · Vercel' },
+          { label: 'Backend', value: 'Node.js + Express · Railway' },
+          { label: 'Database', value: 'Supabase (PostgreSQL)' },
+          { label: 'Flight data', value: 'RapidAPI · Flights Sky Scraper' },
+          { label: 'Alerts', value: 'Callmebot WhatsApp' },
+        ].map(({ label, value }) => (
+          <div key={label} className="flex items-center justify-between px-5 py-3.5">
+            <span className="text-xs text-gray-400">{label}</span>
+            <span className="text-xs font-medium text-gray-800">{value}</span>
+          </div>
+        ))}
+      </div>
+      <p className="text-center text-xs text-gray-300 pb-4">Built by Chat · Melbourne, Australia</p>
+    </div>
+  );
+}
+
+// ── Bottom Nav ─────────────────────────────────────────────────────────────────
+function BottomNav({ activePage, setActivePage }) {
+  const items = [
+    { id: 'flights', label: 'Flights', icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#C17B2A' : '#bbb'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 2c-2-2-4-2-5.5-.5L10 5 1.8 6.2l4.4 4.4-1.8 5.4 5-1.8 4.4 4.4z"/>
+      </svg>
+    )},
+    { id: 'windows', label: 'Windows', icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#C17B2A' : '#bbb'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+    )},
+    { id: 'alerts', label: 'Alerts', icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#C17B2A' : '#bbb'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+    )},
+    { id: 'about', label: 'About', icon: (active) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#C17B2A' : '#bbb'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="8.5"/>
+        <line x1="12" y1="11" x2="12" y2="16"/>
+      </svg>
+    )},
+  ];
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex md:hidden z-50"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      {items.map(({ id, label, icon }) => {
+        const active = activePage === id;
+        return (
+          <button key={id} onClick={() => setActivePage(id)}
+            className="flex-1 flex flex-col items-center justify-center py-2 gap-1 transition-all active:scale-95"
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+            {icon(active)}
+            <span className="text-xs" style={{ color: active ? '#C17B2A' : '#bbb', fontWeight: active ? 500 : 400 }}>
+              {label}
+            </span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+// ── Top Nav (desktop) ──────────────────────────────────────────────────────────
+function TopNav({ activePage, setActivePage }) {
+  const items = [
+    { id: 'flights', label: 'Flights' },
+    { id: 'windows', label: 'Windows' },
+    { id: 'alerts', label: 'Alerts' },
+    { id: 'about', label: 'About' },
+  ];
+  return (
+    <div className="hidden md:flex items-center gap-1">
+      {items.map(({ id, label }) => {
+        const active = activePage === id;
+        return (
+          <button key={id} onClick={() => setActivePage(id)}
+            className="text-sm px-3 py-1.5 rounded-lg transition-all"
+            style={{
+              background: active ? 'rgba(193,123,42,0.1)' : 'transparent',
+              color: active ? '#C17B2A' : '#9ca3af',
+              fontWeight: active ? 500 : 400,
+              border: 'none', cursor: 'pointer',
+            }}>
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Main App ───────────────────────────────────────────────────────────────────
 export default function App() {
+  const [activePage, setActivePage]     = useState('flights');
   const [activeWindow, setActiveWindow] = useState(1);
   const [flights, setFlights]           = useState([]);
+  const [flights1, setFlights1]         = useState([]);
+  const [flights2, setFlights2]         = useState([]);
   const [history, setHistory]           = useState([]);
+  const [history1, setHistory1]         = useState([]);
+  const [history2, setHistory2]         = useState([]);
   const [alerts, setAlerts]             = useState([]);
   const [status, setStatus]             = useState(null);
   const [loading, setLoading]           = useState(true);
@@ -144,15 +345,23 @@ export default function App() {
   const fetchData = useCallback(async (windowId) => {
     setLoading(true);
     try {
-      const [flightsRes, historyRes, alertsRes, statusRes] = await Promise.all([
+      const [flightsRes, historyRes, alertsRes, statusRes, flights1Res, history1Res, flights2Res, history2Res] = await Promise.all([
         fetch(`${API}/api/flights/latest?window=${windowId}`),
         fetch(`${API}/api/history?window=${windowId}`),
         fetch(`${API}/api/alerts`),
         fetch(`${API}/api/status`),
+        fetch(`${API}/api/flights/latest?window=1`),
+        fetch(`${API}/api/history?window=1`),
+        fetch(`${API}/api/flights/latest?window=2`),
+        fetch(`${API}/api/history?window=2`),
       ]);
       setFlights(await flightsRes.json());
       setHistory(await historyRes.json());
       setAlerts(await alertsRes.json());
+      setFlights1(await flights1Res.json());
+      setHistory1(await history1Res.json());
+      setFlights2(await flights2Res.json());
+      setHistory2(await history2Res.json());
       const s = await statusRes.json();
       setStatus(s);
       const win = s.windows?.find(w => w.id === windowId);
@@ -172,44 +381,34 @@ export default function App() {
 
   useEffect(() => { fetchData(activeWindow); }, [activeWindow, fetchData]);
 
-  // WebSocket connection
   useEffect(() => {
     const socket = io(API, {
-  transports: ['websocket', 'polling'],
-  reconnection: true,
-  reconnectionAttempts: Infinity,
-  reconnectionDelay: 1000,
-});
-
-    socket.on('connect', () => {
-      console.log('[Socket] Connected');
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
     });
-
+    socket.on('connect', () => console.log('[Socket] Connected'));
     socket.on('status', (data) => {
       setScraping(data.isRunning);
       if (data.scanStep !== undefined) setScanStep(data.scanStep);
-      // When scan completes, refresh data for all users
       if (data.scanStep === 'done') {
         setScanStep(0);
         fetchData(activeWindowRef.current);
       }
     });
-
-    socket.on('disconnect', () => {
-      console.log('[Socket] Disconnected');
-    });
-
+    socket.on('disconnect', () => console.log('[Socket] Disconnected'));
     return () => socket.disconnect();
   }, [fetchData]);
 
   const handleScrape = async () => {
     try {
       await fetch(`${API}/api/scrape`, { method: 'POST' });
-      // scraping state now driven by socket events
     } catch (err) {
       console.error('Scrape error:', err);
     }
   };
+
   const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
   const heroPrice = flights.length > 0 ? Math.min(...flights.map(f => f.price_aud)) : null;
   const activeWin = windows.find(w => w.id === activeWindow);
@@ -219,38 +418,42 @@ export default function App() {
       <RadarOverlay scraping={scraping} scanStep={scanStep} />
 
       <div className="min-h-screen bg-gray-50">
+        {/* Header */}
         <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
           <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-
+            {/* Logo + wordmark */}
             <div className="flex items-center gap-3">
-              <div style={{position:'relative', width:52, height:52, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center'}}>
+              <div style={{ position: 'relative', width: 52, height: 52, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg"
-                  style={{position:'absolute', top:0, left:0}}>
+                  style={{ position: 'absolute', top: 0, left: 0 }}>
                   <circle cx="26" cy="26" r="18"
                     stroke="#C17B2A" strokeWidth="1.5" fill="none"
                     strokeDasharray="113" strokeDashoffset="113"
-                    style={{animation:'ringDraw 1s cubic-bezier(0.4,0,0.2,1) 0.1s forwards'}}/>
+                    style={{ animation: 'ringDraw 1s cubic-bezier(0.4,0,0.2,1) 0.1s forwards' }} />
                   <path d="M37 9 Q46 3 52 7 Q47 11 42 16 Q39 13 37 9Z" fill="#C17B2A"
-                    style={{opacity:0, animation:'wingIn 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.9s forwards, wingPulse 4s ease-in-out 2.5s infinite'}}/>
+                    style={{ opacity: 0, animation: 'wingIn 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.9s forwards, wingPulse 4s ease-in-out 2.5s infinite' }} />
                   <path d="M39 16 Q45 12 52 15 Q47 18 43 21 Q41 19 39 16Z" fill="#C17B2A"
-                    style={{opacity:0, animation:'wingIn2 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.05s forwards'}}/>
+                    style={{ opacity: 0, animation: 'wingIn2 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.05s forwards' }} />
                 </svg>
                 <span style={{
-                  position:'absolute', fontSize:22, lineHeight:1, zIndex:1,
-                  top:'50%', left:'50%', opacity:0,
-                  animation:'foxIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards',
+                  position: 'absolute', fontSize: 22, lineHeight: 1, zIndex: 1,
+                  top: '50%', left: '50%', opacity: 0,
+                  transform: 'translate(-50%,-50%)',
+                  animation: 'foxIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards',
                 }}>🦊</span>
               </div>
               <div>
                 <div className="leading-none">
-                  <span className="text-xl font-medium" style={{letterSpacing:'-0.03em', color:'#111'}}>Fare</span>
-                  <span className="text-xl font-medium" style={{letterSpacing:'-0.03em', color:'#C17B2A'}}>fox</span>
+                  <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
+                  <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
                 </div>
                 <div className="text-xs text-gray-400 mt-0.5">Your family's flight radar</div>
               </div>
             </div>
 
+            {/* Desktop nav + right side */}
             <div className="flex items-center gap-4">
+              <TopNav activePage={activePage} setActivePage={setActivePage} />
               <span className="text-xs font-medium text-gray-400 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-full hidden sm:block">
                 MEL → CMB
               </span>
@@ -259,43 +462,54 @@ export default function App() {
                   {scraping
                     ? 'Scanning MEL → CMB…'
                     : status.lastRun
-                      ? `Last scan ${new Date(status.lastRun).toLocaleString('en-AU', { dateStyle:'short', timeStyle:'short' })}`
+                      ? `Last scan ${new Date(status.lastRun).toLocaleString('en-AU', { dateStyle: 'short', timeStyle: 'short' })}`
                       : 'Never scanned'}
                 </span>
               )}
               {isAdmin && (
-  <button
-    onClick={handleScrape}
-    disabled={scraping}
-    className="text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-    style={scraping
-      ? {background: 'rgba(193,123,42,0.12)', color: '#C17B2A', border: '1px solid rgba(193,123,42,0.3)'}
-      : {background: '#C17B2A', color: '#fff', border: 'none'}}
-  >
-    {scraping ? (
-      <span className="flex items-center gap-2">
-        <span className="w-3 h-3 border-2 border-t-transparent rounded-full animate-spin"
-          style={{borderColor: 'rgba(193,123,42,0.3)', borderTopColor: '#C17B2A'}}/>
-        Scanning…
-      </span>
-    ) : 'Scan Now'}
-  </button>
-)}
+                <button onClick={handleScrape} disabled={scraping}
+                  className="text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  style={scraping
+                    ? { background: 'rgba(193,123,42,0.12)', color: '#C17B2A', border: '1px solid rgba(193,123,42,0.3)' }
+                    : { background: '#C17B2A', color: '#fff', border: 'none' }}>
+                  {scraping ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-3 h-3 border-2 border-t-transparent rounded-full animate-spin"
+                        style={{ borderColor: 'rgba(193,123,42,0.3)', borderTopColor: '#C17B2A' }} />
+                      Scanning…
+                    </span>
+                  ) : 'Scan Now'}
+                </button>
+              )}
             </div>
           </div>
         </header>
 
-        <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
-          {alerts.length > 0 && <AlertBanner alerts={alerts} />}
-          <HeroStat price={heroPrice} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} />
-          <DateWindowTabs windows={windows} active={activeWindow} onChange={setActiveWindow} />
-          <PriceChart history={history} loading={loading} />
-          <FlightsList flights={flights} loading={loading} />
-          <p className="text-center text-xs text-gray-300 pb-4">
-            Checks daily at 08:00 · Jetstar & SriLankan Airlines · Alert below A$1,100 · One way fares only
-          </p>
-        </main>
+        {/* Page content */}
+        <div className="pb-20 md:pb-0">
+          {activePage === 'flights' && (
+            <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
+              {alerts.length > 0 && <AlertBanner alerts={alerts} />}
+              <HeroStat price={heroPrice} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} />
+              <DateWindowTabs windows={windows} active={activeWindow} onChange={setActiveWindow} />
+              <PriceChart history={history} loading={loading} />
+              <FlightsList flights={flights} loading={loading} />
+              <p className="text-center text-xs text-gray-300 pb-4">
+                Checks daily at 08:00 & 18:00 · Jetstar & SriLankan Airlines · Alert below A$1,100 · One way fares only
+              </p>
+            </main>
+          )}
+          {activePage === 'windows' && (
+            <WindowsPage windows={windows} flights1={flights1} flights2={flights2}
+              history1={history1} history2={history2} status={status} />
+          )}
+          {activePage === 'alerts' && <AlertsPage />}
+          {activePage === 'about' && <AboutPage status={status} />}
+        </div>
       </div>
+
+      {/* Mobile bottom nav */}
+      <BottomNav activePage={activePage} setActivePage={setActivePage} />
     </>
   );
 }
