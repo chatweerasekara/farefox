@@ -2,17 +2,39 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { startScheduler, runScrape, getStatus } = require('./scheduler');
+const http = require('http');
+const { Server } = require('socket.io');
+const { startScheduler, runScrape, getStatus, setSocketServer } = require('./scheduler');
 const { readFlights } = require('./db');
 const { getWindow1, getWindow2 } = require('./dateWindows');
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ['https://farefox-seven.vercel.app', 'http://localhost:5173'],
+    methods: ['GET', 'POST'],
+  }
+});
+
 const PORT = process.env.PORT || 3001;
+
+// Pass socket server to scheduler so it can emit events
+setSocketServer(io);
 
 app.use(cors({
   origin: ['https://farefox-seven.vercel.app', 'http://localhost:5173']
 }));
 app.use(express.json());
+
+io.on('connection', (socket) => {
+  console.log('[Socket] Client connected:', socket.id);
+  // Send current status immediately on connect
+  socket.emit('status', getStatus());
+  socket.on('disconnect', () => {
+    console.log('[Socket] Client disconnected:', socket.id);
+  });
+});
 
 // GET /api/status
 app.get('/api/status', (_req, res) => {
@@ -100,7 +122,7 @@ if (process.env.NODE_ENV === 'production') {
   );
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`[Server] Farefox running on http://localhost:${PORT}`);
   startScheduler();
 });
