@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const { scrapeWindow } = require('./scraper');
 const { getWindow1, getWindow2 } = require('./dateWindows');
-const { appendFlights } = require('./csv');
+const { appendFlights } = require('./db');
 const { sendWhatsAppAlert } = require('./alerts');
 
 let lastRun = null;
