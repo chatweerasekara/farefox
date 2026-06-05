@@ -118,58 +118,7 @@ function RadarOverlay({ scraping }) {
       </div>
 
       {/* CSS animations injected inline */}
-      <style>{`
-        @keyframes radarExpand {
-          0%   { transform: scale(0.2); opacity: 0.8; }
-          100% { transform: scale(1.8); opacity: 0; }
-        }
-        @keyframes radarSweep {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        @keyframes blipPulse {
-          0%,100% { opacity: 0; transform: scale(0.5); }
-          50%     { opacity: 1; transform: scale(1.2); }
-        }
-        @keyframes progressScan {
-          0%   { width: 0%; }
-          85%  { width: 90%; }
-          100% { width: 100%; }
-        }
-        @keyframes activePulse {
-          0%,100% { opacity: 1; }
-          50%     { opacity: 0.3; }
-        }
-        @keyframes dots {
-          0%   { content: ''; }
-          25%  { content: '.'; }
-          50%  { content: '..'; }
-          75%  { content: '...'; }
-          100% { content: ''; }
-        }
-        @keyframes ringDraw {
-          to { stroke-dashoffset: 0; }
-        }
-        @keyframes wingIn {
-          0%   { opacity: 0; transform: scale(0.3) translate(-4px,4px); }
-          70%  { opacity: 1; transform: scale(1.08); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes wingIn2 {
-          0%   { opacity: 0; transform: scale(0.3) translate(-4px,4px); }
-          70%  { opacity: 0.5; transform: scale(1.08); }
-          100% { opacity: 0.35; transform: scale(1); }
-        }
-        @keyframes foxIn {
-          0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.6); }
-          70%  { opacity: 1; transform: translate(-50%,-50%) scale(1.08); }
-          100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-        }
-        @keyframes wingPulse {
-          0%,100% { opacity: 1; }
-          50%     { opacity: 0.6; }
-        }
-      `}</style>
+     
     </div>
   );
 }
