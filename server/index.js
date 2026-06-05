@@ -4,7 +4,7 @@ const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
 const { startScheduler, runScrape, getStatus, setSocketServer } = require('./scheduler');
-const { readFlights, getScanCount, addSubscriber } = require('./db');
+const { readFlights, getScanCount, addSubscriber, removeSubscriber } = require('./db');
 const { getWindow1, getWindow2 } = require('./dateWindows');
 
 const app = express();
@@ -126,6 +126,25 @@ app.post('/api/subscribe', async (req, res) => {
     res.status(500).json({ error: 'Failed to subscribe' });
   }
 });
+
+// GET /api/unsubscribe?email=xxx
+app.get("/api/unsubscribe", async (req, res) => {
+  const { email } = req.query;
+  if (!email) {
+    return res.status(400).send(unsubscribePage("Invalid unsubscribe link."));
+  }
+  try {
+    await removeSubscriber(email);
+    res.send(unsubscribePage(`${email} has been unsubscribed from Farefox alerts.`));
+  } catch (err) {
+    console.error("[API] unsubscribe error:", err.message);
+    res.status(500).send(unsubscribePage("Something went wrong. Please try again."));
+  }
+});
+
+function unsubscribePage(message) {
+  return `<!DOCTYPE html><html><body style="margin:0;padding:40px;font-family:-apple-system,sans-serif;background:#f9f9f7;display:flex;align-items:center;justify-content:center;min-height:100vh;box-sizing:border-box;"><div style="background:#fff;border-radius:16px;border:1px solid #e5e5e3;padding:40px;max-width:400px;width:100%;text-align:center;"><div style="font-size:22px;font-weight:500;letter-spacing:-0.03em;margin-bottom:8px;"><span style="color:#111;">Fare</span><span style="color:#C17B2A;">fox</span></div><p style="font-size:14px;color:#555;margin:16px 0;">${message}</p><a href="https://farefox-seven.vercel.app" style="font-size:13px;color:#C17B2A;text-decoration:none;">Back to Farefox →</a></div></body></html>`;
+}
 
 // POST /api/scrape
 app.post('/api/scrape', (_req, res) => {
