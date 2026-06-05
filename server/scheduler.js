@@ -50,11 +50,8 @@ async function runScrape() {
     if (alertFlights.length > 0) {
       const f = alertFlights[0];
       const dur = `${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m`;
-      const bookUrl = f.airline.toLowerCase().includes('jetstar')
-        ? `https://www.jetstar.com/au/en/flights/results?from=MEL&to=CMB&departDate=${f.departure_date}&adults=1&children=0&infants=0&cabin=Y`
-        : f.airline.toLowerCase().includes('sri')
-        ? `https://www.srilankan.com/en_uk/fly-with-us/book-a-flight?from=MEL&to=CMB&departDate=${f.departure_date}&adults=1`
-        : `https://www.google.com/travel/flights?q=flights+from+MEL+to+CMB+on+${f.departure_date}`;
+      const depDate = f.departure_date.replace(/-/g, '').slice(2);
+const bookUrl = `https://www.skyscanner.com.au/transport/flights/mel/cmb/${depDate}/?adults=1&cabinclass=economy&rtn=0&currency=AUD`;
       const msg = `Farefox: ${f.airline} MEL->CMB on ${f.departure_date} for AUD ${f.price_aud.toFixed(0)}. ${f.stops} stop(s), ${dur}. Book: ${bookUrl}`;
       await sendWhatsAppAlert(msg);
     }
