@@ -36,8 +36,8 @@ function RadarOverlay({ scraping }) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)'}}>
+   <div className="fixed inset-0 flex items-center justify-center" style={{zIndex: 9999, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)'}}
+     
       <div className="rounded-2xl px-10 py-10 flex flex-col items-center gap-6 w-full max-w-sm mx-4"
         style={{background: '#0a0a0a', border: '0.5px solid #1a1a1a'}}>
 
