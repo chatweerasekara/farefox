@@ -56,4 +56,28 @@ async function getScanCount() {
   return unique.size;
 }
 
-module.exports = { appendFlights, readFlights, getScanCount };
+async function addSubscriber({ email, threshold, window_1, window_2 }) {
+  const { data, error } = await supabase
+    .from('subscribers')
+    .upsert({ email, threshold, window_1, window_2 }, { onConflict: 'email' })
+    .select()
+    .single();
+  if (error) {
+    console.error('[DB] Subscribe error:', error.message);
+    throw error;
+  }
+  return data;
+}
+
+async function getSubscribers() {
+  const { data, error } = await supabase
+    .from('subscribers')
+    .select('*');
+  if (error) {
+    console.error('[DB] Get subscribers error:', error.message);
+    return [];
+  }
+  return data;
+}
+
+module.exports = { appendFlights, readFlights, getScanCount, addSubscriber, getSubscribers };
