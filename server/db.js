@@ -1,5 +1,4 @@
 const { createClient } = require('@supabase/supabase-js');
-
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
@@ -45,4 +44,16 @@ async function readFlights(windowId) {
   }));
 }
 
-module.exports = { appendFlights, readFlights };
+async function getScanCount() {
+  const { data, error } = await supabase
+    .from('flights')
+    .select('timestamp');
+  if (error) {
+    console.error('[DB] Scan count error:', error.message);
+    return 0;
+  }
+  const unique = new Set(data.map(r => r.timestamp));
+  return unique.size;
+}
+
+module.exports = { appendFlights, readFlights, getScanCount };
