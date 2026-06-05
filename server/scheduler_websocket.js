@@ -7,6 +7,15 @@ const { sendWhatsAppAlert } = require('./alerts');
 let lastRun = null;
 let lastStatus = 'never';
 let isRunning = false;
+let io = null;
+
+function setSocketServer(socketServer) {
+  io = socketServer;
+}
+
+function emitStatus(extra = {}) {
+  if (io) io.emit('status', { lastRun, lastStatus, isRunning, ...extra });
+}
 
 async function runScrape() {
   if (isRunning) {
@@ -15,17 +24,22 @@ async function runScrape() {
   }
   isRunning = true;
   lastStatus = 'running';
+  emitStatus({ scanStep: 0 }); // notify all clients — scan started
   console.log('[Scheduler] Starting scrape...');
 
   try {
     const w1 = getWindow1();
     const w2 = getWindow2();
 
-    // Run windows sequentially to avoid API hammering
+    // Window 1
     const flights1 = await scrapeWindow(w1);
-    const flights2 = await scrapeWindow(w2);
-    const allFlights = [...flights1, ...flights2];
+    emitStatus({ scanStep: 1 }); // window 1 done
 
+    // Window 2
+    const flights2 = await scrapeWindow(w2);
+    emitStatus({ scanStep: 2 }); // window 2 done
+
+    const allFlights = [...flights1, ...flights2];
     if (allFlights.length > 0) appendFlights(allFlights);
 
     const threshold = parseFloat(process.env.PRICE_ALERT_THRESHOLD ?? 1100);
@@ -37,11 +51,11 @@ async function runScrape() {
       const f = alertFlights[0];
       const dur = `${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m`;
       const bookUrl = f.airline.toLowerCase().includes('jetstar')
-  ? `https://www.jetstar.com/au/en/flights/results?from=MEL&to=CMB&departDate=${f.departure_date}&adults=1&children=0&infants=0&cabin=Y`
-  : f.airline.toLowerCase().includes('sri')
-  ? `https://www.srilankan.com/en_uk/fly-with-us/book-a-flight?from=MEL&to=CMB&departDate=${f.departure_date}&adults=1`
-  : `https://www.google.com/travel/flights?q=flights+from+MEL+to+CMB+on+${f.departure_date}`;
-const msg = `Farefox: ${f.airline} MEL->CMB on ${f.departure_date} for AUD ${f.price_aud.toFixed(0)}. ${f.stops} stop(s), ${dur}. Book: ${bookUrl}`;
+        ? `https://www.jetstar.com/au/en/flights/results?from=MEL&to=CMB&departDate=${f.departure_date}&adults=1&children=0&infants=0&cabin=Y`
+        : f.airline.toLowerCase().includes('sri')
+        ? `https://www.srilankan.com/en_uk/fly-with-us/book-a-flight?from=MEL&to=CMB&departDate=${f.departure_date}&adults=1`
+        : `https://www.google.com/travel/flights?q=flights+from+MEL+to+CMB+on+${f.departure_date}`;
+      const msg = `Farefox: ${f.airline} MEL->CMB on ${f.departure_date} for AUD ${f.price_aud.toFixed(0)}. ${f.stops} stop(s), ${dur}. Book: ${bookUrl}`;
       await sendWhatsAppAlert(msg);
     }
 
@@ -53,11 +67,11 @@ const msg = `Farefox: ${f.airline} MEL->CMB on ${f.departure_date} for AUD ${f.p
     console.error('[Scheduler] Scrape failed:', err.message);
   } finally {
     isRunning = false;
+    emitStatus({ scanStep: 'done' }); // notify all clients — scan complete
   }
 }
 
 function startScheduler() {
-  // Daily at 08:00 local time
   cron.schedule('0 8 * * *', () => {
     console.log('[Scheduler] Cron fired — 08:00 Melbourne daily scrape');
     runScrape();
@@ -69,4 +83,4 @@ function getStatus() {
   return { lastRun, lastStatus, isRunning };
 }
 
-module.exports = { startScheduler, runScrape, getStatus };
+module.exports = { startScheduler, runScrape, getStatus, setSocketServer };
