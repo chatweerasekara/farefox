@@ -174,7 +174,12 @@ export default function App() {
 
   // WebSocket connection
   useEffect(() => {
-    const socket = io(API, { transports: ['websocket', 'polling'] });
+    const socket = io(API, {
+  transports: ['websocket', 'polling'],
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+});
 
     socket.on('connect', () => {
       console.log('[Socket] Connected');
