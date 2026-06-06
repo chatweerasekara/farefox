@@ -76,7 +76,7 @@ app.get('/api/history', async (req, res) => {
     const flights = await readFlights(wid);
     const byDate = {};
     for (const f of flights) {
-      const d = f.timestamp.split('T')[0];
+      const d = new Date(f.timestamp).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne', year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-');
       if (!(d in byDate) || f.price_aud < byDate[d]) byDate[d] = f.price_aud;
     }
     const history = Object.entries(byDate)
