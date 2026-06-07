@@ -320,11 +320,11 @@ function AboutPage({ status, isAdmin }) {
 
       {/* Logo block */}
       <div className="flex flex-col items-center py-4">
-        <div className="leading-none mb-1">
+        <div className="leading-none mb-0">
           <span className="text-2xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
           <span className="text-2xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
         </div>
-        <p className="text-xs text-gray-400 mt-1">Your family's flight radar</p>
+        <p className="text-xs text-gray-400 mt-0.5">Your family's flight radar</p>
         <p className="text-xs text-gray-300 mt-0.5">v1.0.0</p>
       </div>
 
