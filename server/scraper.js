@@ -30,9 +30,11 @@ function extractTargetFlights(apiData, date, windowId) {
   const timestamp = new Date().toISOString();
   return itineraries
     .filter(it => {
-      const leg = it.legs?.[0];
-      const airline = (leg?.carriers?.marketing?.[0]?.name ?? '').toLowerCase();
-      return TARGET_AIRLINES.some(t => airline.includes(t));
+  const leg = it.legs?.[0];
+  const airline = (leg?.carriers?.marketing?.[0]?.name ?? '').toLowerCase();
+  const isDirect = (leg?.stopCount ?? 1) === 0;
+  return isDirect && TARGET_AIRLINES.some(t => airline.includes(t));
+})
     })
     .map(it => {
       const leg = it.legs[0];
