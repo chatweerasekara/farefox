@@ -108,7 +108,7 @@ function WindowsPage({ windows, flights1, flights2, history1, history2, status }
     const cheapest = flights.length > 0 ? Math.min(...flights.map(f => f.price_aud)) : null;
     const today = history[history.length - 1]?.minPrice ?? null;
     const yesterday = history[history.length - 2]?.minPrice ?? null;
-    const diff = today && yesterday ? today - yesterday : null;
+    const diff = today && yesterday ? Math.round(today - yesterday) : null;
     const win = windows.find(w => w.id === wid);
     const daysUntil = win?.startDate
       ? Math.max(0, Math.ceil((new Date(win.startDate) - new Date()) / (1000 * 60 * 60 * 24)))
