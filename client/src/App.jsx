@@ -668,7 +668,6 @@ export default function App() {
                   animation: 'foxIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards',
                 }}>🦊</span>
               </div>
-              <div>
                 <div className="leading-none">
                   <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
                   <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
