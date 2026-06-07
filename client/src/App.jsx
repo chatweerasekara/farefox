@@ -647,7 +647,7 @@ export default function App() {
         <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
           <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
             {/* Logo + wordmark */}
-            <button className="flex items-center gap-3" onClick={() => setActivePage('flights')}
+            <button className="flex items-center gap-2" onClick={() => setActivePage('flights')}
   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}>
               <div style={{ position: 'relative', width: 52, height: 52, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg"
