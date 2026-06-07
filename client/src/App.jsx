@@ -635,7 +635,7 @@ export default function App() {
   };
 
   const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
-  const heroPrice = flights.length > 0 ? Math.min(...flights.map(f => f.price_aud)) : null;
+  const cheapest = flights.length > 0 ? Math.round(Math.min(...flights.map(f => f.price_aud))) : null;
   const activeWin = windows.find(w => w.id === activeWindow);
 
   return (
