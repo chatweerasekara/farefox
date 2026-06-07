@@ -647,7 +647,7 @@ export default function App() {
         <header className="bg-white border-b border-gray-100 sticky top-0 z-10">
           <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
             {/* Logo + wordmark */}
-            <button className="flex items-center gap-3" onClick={() => setActivePage('flights')}
+            <button className="flex items-center gap-1" onClick={() => setActivePage('flights')}
   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}>
               <div style={{ position: 'relative', width: 52, height: 52, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -669,13 +669,13 @@ export default function App() {
                 }}>🦊</span>
               </div>
               <div>
-<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-  <div className="leading-none">
-  <span className="text-xl font-medium tracking-tight" style={{ color: '#111' }}>Fare</span>
-  <span className="text-xl font-medium tracking-tight" style={{ color: '#C17B2A' }}>fox</span>
-</div>
-<div className="text-xs text-gray-400 mt-0.5">Your family's flight radar</div>
+                <div className="leading-none">
+                  <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
+                  <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
+                </div>
+                <div className="text-xs text-gray-400 mt-0.5">Your family's flight radar</div>
               </div>
+            </button>
             </button>
 
             {/* Desktop nav + right side */}
