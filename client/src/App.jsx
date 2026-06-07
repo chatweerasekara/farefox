@@ -716,7 +716,7 @@ export default function App() {
           {activePage === 'flights' && (
             <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
               {alerts.length > 0 && <AlertBanner alerts={alerts} />}
-              <HeroStat price={heroPrice} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} />
+              <HeroStat price={cheapest} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} />
               <DateWindowTabs windows={windows} active={activeWindow} onChange={setActiveWindow} />
               <PriceChart history={history} loading={loading} />
               <FlightsList flights={flights} loading={loading} />
