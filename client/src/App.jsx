@@ -669,7 +669,7 @@ export default function App() {
                 }}>🦊</span>
               </div>
               <div>
-                <div className="leading-none" style={{ paddingLeft: '1px' }}>
+                <div className="leading-none" style={{ textIndent: '-0.03em' }}>
                   <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
                   <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
                 </div>
