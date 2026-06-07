@@ -649,8 +649,8 @@ export default function App() {
             {/* Logo + wordmark */}
 <button className="flex items-center gap-1" onClick={() => setActivePage('flights')}
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}>
-              <div style={{ position: 'relative', width: 52, height: 52, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg"
+              <div style={{ position: 'relative', width: 64, height: 64, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="64" height="64" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg"
                   style={{ position: 'absolute', top: 0, left: 0 }}>
                   <circle cx="26" cy="26" r="18"
                     stroke="#C17B2A" strokeWidth="1.5" fill="none"
