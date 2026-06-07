@@ -669,7 +669,8 @@ export default function App() {
                 }}>🦊</span>
               </div>
               <div>
-<div className="leading-none">
+<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+  <div className="leading-none">
   <span className="text-xl font-medium tracking-tight" style={{ color: '#111' }}>Fare</span>
   <span className="text-xl font-medium tracking-tight" style={{ color: '#C17B2A' }}>fox</span>
 </div>
