@@ -105,7 +105,7 @@ function RadarOverlay({ scraping, scanStep }) {
 // ── Windows Page ───────────────────────────────────────────────────────────────
 function WindowsPage({ windows, flights1, flights2, history1, history2, status }) {
   const getWindowData = (wid, flights, history) => {
-    const cheapest = flights.length > 0 ? Math.min(...flights.map(f => f.price_aud)) : null;
+    const cheapest = flights.length > 0 ? Math.round(Math.min(...flights.map(f => f.price_aud))) : null;
     const today = history[history.length - 1]?.minPrice ?? null;
     const yesterday = history[history.length - 2]?.minPrice ?? null;
     const diff = today && yesterday ? Math.round(today - yesterday) : null;
