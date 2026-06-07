@@ -678,7 +678,7 @@ export default function App() {
             </button>
 
             {/* Desktop nav + right side */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <TopNav activePage={activePage} setActivePage={setActivePage} />
               <span className="text-xs font-medium text-gray-400 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-full hidden sm:block">
                 MEL → CMB
