@@ -675,7 +675,7 @@ export default function App() {
                 </div>
                 <div className="text-xs text-gray-400 mt-0.5">Your family's flight radar</div>
               </div>
-            </div>
+            </button>
 
             {/* Desktop nav + right side */}
             <div className="flex items-center gap-4">
