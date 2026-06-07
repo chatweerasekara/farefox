@@ -163,17 +163,25 @@ async function runScrape() {
     const allFlights = [...flights1, ...flights2];
     if (allFlights.length > 0) appendFlights(allFlights);
 
-    // WhatsApp alert (existing)
+    // WhatsApp alert
     const threshold = parseFloat(process.env.PRICE_ALERT_THRESHOLD ?? 1100);
-    const alertFlights = allFlights
-      .filter(f => f.price_aud > 0 && f.price_aud < threshold)
-      .sort((a, b) => a.price_aud - b.price_aud);
-    if (alertFlights.length > 0) {
-      const f = alertFlights[0];
-      const dur = `${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m`;
-      const bookUrl = buildBookUrl(f.departure_date);
-      const msg = `Farefox: ${f.airline} MEL->CMB on ${f.departure_date} for AUD ${f.price_aud.toFixed(0)}. ${f.stops} stop(s), ${dur}. Book: ${bookUrl}`;
-      await sendWhatsAppAlert(msg);
+    const msgParts = [];
+    const windows = [
+      { id: 1, label: 'Xmas/NY', flights: flights1 },
+      { id: 2, label: 'SL New Year', flights: flights2 },
+    ];
+    for (const win of windows) {
+      const best = win.flights
+        .filter(f => f.price_aud > 0 && f.price_aud < threshold)
+        .sort((a, b) => a.price_aud - b.price_aud)[0];
+      if (best) {
+        const dur = `${Math.floor(best.duration_mins / 60)}h ${best.duration_mins % 60}m`;
+        const bookUrl = buildBookUrl(best.departure_date);
+        msgParts.push(`${win.label}: ${best.airline} ${best.departure_date} AUD${best.price_aud.toFixed(0)} ${dur} Book: ${bookUrl}`);
+      }
+    }
+    if (msgParts.length > 0) {
+      await sendWhatsAppAlert(`Farefox MEL->CMB\n${msgParts.join('\n')}`);
     }
 
     // Email alerts (new)
