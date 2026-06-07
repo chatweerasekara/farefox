@@ -35,7 +35,6 @@ function extractTargetFlights(apiData, date, windowId) {
   const isDirect = (leg?.stopCount ?? 1) === 0;
   return isDirect && TARGET_AIRLINES.some(t => airline.includes(t));
 })
-    })
     .map(it => {
       const leg = it.legs[0];
       return {
