@@ -53,7 +53,7 @@ function extractTargetFlights(apiData, date, windowId) {
 }
 
 async function scrapeWindow(window) {
-  // Sample every 3rd date to reduce API usage (~20 requests per full scan)
+
   const sampledDates = window.dates;
 console.log(`[Scraper] Window ${window.id} "${window.label}" — ${sampledDates.length} dates`);
   const results = [];
