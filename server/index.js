@@ -94,12 +94,16 @@ app.get('/api/alerts', async (_req, res) => {
   try {
     const threshold = parseFloat(process.env.PRICE_ALERT_THRESHOLD ?? 1100);
     const [f1, f2] = await Promise.all([readFlights(1), readFlights(2)]);
-    const flights = [...f1, ...f2];
-    if (!flights.length) return res.json([]);
-    const latestTs = flights.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
-    const alerts = flights
-      .filter(f => f.timestamp === latestTs && f.price_aud > 0 && f.price_aud < threshold)
-      .sort((a, b) => a.price_aud - b.price_aud);
+    
+    // Get latest timestamp per window separately
+    const latestTs1 = f1.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
+    const latestTs2 = f2.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
+    
+    const alerts = [
+      ...f1.filter(f => f.timestamp === latestTs1 && f.price_aud > 0 && f.price_aud < threshold),
+      ...f2.filter(f => f.timestamp === latestTs2 && f.price_aud > 0 && f.price_aud < threshold),
+    ].sort((a, b) => a.price_aud - b.price_aud);
+    
     res.json(alerts);
   } catch (err) {
     console.error('[API] alerts error:', err.message);
