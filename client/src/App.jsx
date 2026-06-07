@@ -669,11 +669,11 @@ export default function App() {
                 }}>🦊</span>
               </div>
               <div>
-                <div className="leading-none" style={{ marginLeft: '-30px' }}>
+                <div className="leading-none" style={{ marginLeft: '-45px' }}>
                   <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
                   <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
                 </div>
-                <div className="text-xs text-gray-400 mt-0.5">Your family's flight radar</div>
+                <div className="text-xs text-gray-400 mt-0.025">Your family's flight radar</div>
               </div>
             </button>
 
