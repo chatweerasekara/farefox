@@ -662,7 +662,7 @@ export default function App() {
                     style={{ opacity: 0, animation: 'wingIn2 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.05s forwards' }} />
                 </svg>
                 <span style={{
-                  position: 'absolute', fontSize: 28, lineHeight: 1, zIndex: 1,
+                  position: 'absolute', fontSize: 24, lineHeight: 1, zIndex: 1,
                   top: '50%', left: '50%', opacity: 0,
                   transform: 'translate(-50%,-50%)',
                   animation: 'foxIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards',
