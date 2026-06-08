@@ -444,7 +444,8 @@ function AboutPage({ status, isAdmin }) {
               { label: 'Backend', value: 'Node.js + Express · Railway' },
               { label: 'Database', value: 'Supabase (PostgreSQL)' },
               { label: 'Flight data', value: 'RapidAPI · Flights Sky Scraper' },
-              { label: 'Alerts', value: 'Callmebot WhatsApp' },
+              { label: 'Email Alerts', value: 'Resend' },
+              { label: 'Mobile Alerts', value: 'Callmebot WhatsApp' },
             ].map(({ label, value }) => (
               <div key={label} className="flex items-center justify-between px-5 py-3.5">
                 <span className="text-xs text-gray-400">{label}</span>
