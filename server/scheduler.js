@@ -69,9 +69,22 @@ function buildEmailHtml({ sections, threshold, email }) {
 
         <!-- Header -->
         <div style="background:#0a0a0a; padding:24px 28px;">
-          <span style="font-size:22px; font-weight:500; letter-spacing:-0.03em; color:#fff;">Fare</span>
-          <span style="font-size:22px; font-weight:500; letter-spacing:-0.03em; color:#C17B2A;">fox</span>
-          <p style="margin:4px 0 0; font-size:12px; color:#666;">Your family's flight radar</p>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="position:relative; width:64px; height:64px; flex-shrink:0;">
+              <svg width="64" height="64" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute; top:0; left:0;">
+                <circle cx="26" cy="26" r="18" stroke="#C17B2A" stroke-width="1.5" fill="none"/>
+                <path d="M37 9 Q46 3 52 7 Q47 11 42 16 Q39 13 37 9Z" fill="#C17B2A"/>
+                <path d="M39 16 Q45 12 52 15 Q47 18 43 21 Q41 19 39 16Z" fill="#C17B2A" opacity="0.7"/>
+              </svg>
+              <span style="position:absolute; font-size:26px; line-height:1; top:50%; left:50%; transform:translate(-50%,-50%);">🦊</span>
+            </div>
+            <div>
+              <div style="line-height:1;">
+                <span style="font-size:22px; font-weight:500; letter-spacing:-0.03em; color:#fff; display:inline;">Fare</span><span style="font-size:22px; font-weight:500; letter-spacing:-0.03em; color:#C17B2A; display:inline;">fox</span>
+              </div>
+              <p style="margin:4px 0 0; font-size:12px; color:#666;">Your family's flight radar</p>
+            </div>
+          </div>
         </div>
 
         <!-- Alert banner -->
