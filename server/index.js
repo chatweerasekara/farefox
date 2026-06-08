@@ -11,7 +11,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['https://farefox-seven.vercel.app', 'http://localhost:5173'],
+    origin: ['https://farefox.net', 'https://www.farefox.net', 'https://farefox-seven.vercel.app', 'http://localhost:5173'],
     methods: ['GET', 'POST'],
   }
 });
@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3001;
 setSocketServer(io);
 
 app.use(cors({
-  origin: ['https://farefox-seven.vercel.app', 'http://localhost:5173']
+  origin: ['https://farefox.net', 'https://www.farefox.net', 'https://farefox-seven.vercel.app', 'http://localhost:5173']
 }));
 app.use(express.json());
 
@@ -156,7 +156,7 @@ app.get("/api/unsubscribe", async (req, res) => {
 });
 
 function unsubscribePage(message) {
-  return `<!DOCTYPE html><html><body style="margin:0;padding:40px;font-family:-apple-system,sans-serif;background:#f9f9f7;display:flex;align-items:center;justify-content:center;min-height:100vh;box-sizing:border-box;"><div style="background:#fff;border-radius:16px;border:1px solid #e5e5e3;padding:40px;max-width:400px;width:100%;text-align:center;"><div style="font-size:22px;font-weight:500;letter-spacing:-0.03em;margin-bottom:8px;"><span style="color:#111;">Fare</span><span style="color:#C17B2A;">fox</span></div><p style="font-size:14px;color:#555;margin:16px 0;">${message}</p><a href="https://farefox-seven.vercel.app" style="font-size:13px;color:#C17B2A;text-decoration:none;">Back to Farefox →</a></div></body></html>`;
+  return `<!DOCTYPE html><html><body style="margin:0;padding:40px;font-family:-apple-system,sans-serif;background:#f9f9f7;display:flex;align-items:center;justify-content:center;min-height:100vh;box-sizing:border-box;"><div style="background:#fff;border-radius:16px;border:1px solid #e5e5e3;padding:40px;max-width:400px;width:100%;text-align:center;"><div style="font-size:22px;font-weight:500;letter-spacing:-0.03em;margin-bottom:8px;"><span style="color:#111;">Fare</span><span style="color:#C17B2A;">fox</span></div><p style="font-size:14px;color:#555;margin:16px 0;">${message}</p><a href="https://farefox.net" style="font-size:13px;color:#C17B2A;text-decoration:none;">Back to Farefox →</a></div></body></html>`;
 }
 
 // POST /api/scrape
