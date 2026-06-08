@@ -185,7 +185,7 @@ async function runScrape() {
     }
 
     // Email alerts (new)
-    await sendEmailAlerts(allFlights);
+    // await sendEmailAlerts(allFlights);
 
     lastRun = new Date().toISOString();
     lastStatus = `ok — ${allFlights.length} target flights found`;
