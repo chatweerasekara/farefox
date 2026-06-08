@@ -78,7 +78,6 @@ function FlightRow({ flight, rank }) {
             <p className="text-xs text-gray-400 mt-0.5">Above threshold</p>
           )}
           <p className="text-xs text-gray-300 mt-0.5">Confirm on site</p>
-          )}
         </div>
       </div>
       <div className="flex items-center justify-between mt-3 pl-12">
