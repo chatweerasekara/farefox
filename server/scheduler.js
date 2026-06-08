@@ -142,7 +142,7 @@ async function sendEmailAlerts(allFlights) {
 
     try {
       await resend.emails.send({
-        from: 'Farefox <onboarding@resend.dev>',
+        from: 'Farefox <alerts@farefox.net>',
         to: subscriber.email,
         subject: `🦊 MEL→CMB fares below A$${subThreshold}`,
         html: buildEmailHtml({ sections, threshold: subThreshold, email: subscriber.email }),
