@@ -1,5 +1,4 @@
 const axios = require('axios');
-
 const HOST = 'flights-sky.p.rapidapi.com';
 const TARGET_AIRLINES = ['jetstar', 'srilankan', 'sri lankan airlines'];
 
@@ -25,15 +24,14 @@ async function searchFlightsForDate(date) {
   return data;
 }
 
-function extractTargetFlights(apiData, date, windowId) {
+function extractTargetFlights(apiData, date, windowId, timestamp) {
   const itineraries = apiData?.data?.itineraries ?? [];
-  const timestamp = new Date().toISOString();
   return itineraries
     .filter(it => {
-  const leg = it.legs?.[0];
-  const airline = (leg?.carriers?.marketing?.[0]?.name ?? '').toLowerCase();
-  const isDirect = (leg?.stopCount ?? 1) === 0;
-  return isDirect && TARGET_AIRLINES.some(t => airline.includes(t));
+      const leg = it.legs?.[0];
+      const airline = (leg?.carriers?.marketing?.[0]?.name ?? '').toLowerCase();
+      const isDirect = (leg?.stopCount ?? 1) === 0;
+      return isDirect && TARGET_AIRLINES.some(t => airline.includes(t));
     })
     .map(it => {
       const leg = it.legs[0];
@@ -52,15 +50,15 @@ function extractTargetFlights(apiData, date, windowId) {
 }
 
 async function scrapeWindow(window) {
-
+  const scanTimestamp = new Date().toISOString();
   const sampledDates = window.dates;
-console.log(`[Scraper] Window ${window.id} "${window.label}" — ${sampledDates.length} dates`);
+  console.log(`[Scraper] Window ${window.id} "${window.label}" — ${sampledDates.length} dates`);
   const results = [];
   for (const date of sampledDates) {
     try {
       console.log(`[Scraper]   → ${date}`);
       const data = await searchFlightsForDate(date);
-      const flights = extractTargetFlights(data, date, window.id);
+      const flights = extractTargetFlights(data, date, window.id, scanTimestamp);
       results.push(...flights);
       await sleep(1200);
     } catch (err) {
