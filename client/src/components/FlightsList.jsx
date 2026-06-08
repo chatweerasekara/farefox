@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 function dur(mins) {
   if (!mins) return '—';
   return `${Math.floor(mins / 60)}h ${mins % 60}m`;
@@ -50,17 +52,15 @@ function FlightRow({ flight, rank }) {
       'rounded-xl transition-colors p-4',
       isAlert ? 'bg-amber-50 border border-amber-200' : 'border border-gray-100 hover:border-gray-200',
     ].join(' ')}>
-
-      {/* Top row — rank, badge, airline, price, book */}
       <div className="flex items-center gap-3">
         <span className="text-xs font-bold text-gray-300 w-4 flex-shrink-0">{rank}</span>
         <div
           className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold flex-shrink-0"
           style={{
-  background: code === 'JQ' ? '#FF5A00' : code === 'UL' ? '#003875' : '#f5f5f5',
-  color: code === 'JQ' ? '#fff' : code === 'UL' ? '#FFD700' : '#888',
-  border: 'none'
-}}
+            background: code === 'JQ' ? '#FF5A00' : code === 'UL' ? '#003875' : '#f5f5f5',
+            color: code === 'JQ' ? '#fff' : code === 'UL' ? '#FFD700' : '#888',
+            border: 'none'
+          }}
         >
           {code}
         </div>
@@ -79,8 +79,6 @@ function FlightRow({ flight, rank }) {
           )}
         </div>
       </div>
-
-      {/* Bottom row — times + actions */}
       <div className="flex items-center justify-between mt-3 pl-12">
         <div>
           <p className="text-sm text-gray-700 font-medium">
@@ -114,12 +112,18 @@ function FlightRow({ flight, rank }) {
           </a>
         </div>
       </div>
-
     </div>
   );
 }
 
+const PAGE_SIZE = 15;
+
 export default function FlightsList({ flights, loading }) {
+  const [visible, setVisible] = useState(PAGE_SIZE);
+
+  const showMore = () => setVisible(v => v + PAGE_SIZE);
+  const hasMore = visible < flights.length;
+
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-6">
       <div className="flex items-center gap-2 mb-4">
@@ -145,10 +149,18 @@ export default function FlightsList({ flights, loading }) {
       ) : (
         <>
           <div className="space-y-2">
-            {flights.slice(0, 15).map((f, i) => (
+            {flights.slice(0, visible).map((f, i) => (
               <FlightRow key={i} flight={f} rank={i + 1} />
             ))}
           </div>
+          {hasMore && (
+            <button
+              onClick={showMore}
+              className="w-full mt-4 py-2.5 rounded-xl text-xs font-medium text-gray-400 border border-gray-100 hover:border-gray-200 hover:text-gray-600 transition-all"
+              style={{ background: 'none', cursor: 'pointer' }}>
+              Show {Math.min(PAGE_SIZE, flights.length - visible)} more flights
+            </button>
+          )}
           <p className="text-xs text-gray-300 text-center mt-4">
             Prices are indicative and may vary. Always confirm on the airline site before booking.
           </p>
