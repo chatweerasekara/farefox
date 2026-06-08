@@ -94,17 +94,26 @@ app.get('/api/alerts', async (_req, res) => {
   try {
     const threshold = parseFloat(process.env.PRICE_ALERT_THRESHOLD ?? 1100);
     const [f1, f2] = await Promise.all([readFlights(1), readFlights(2)]);
-    
-    // Get latest timestamp per window separately
+
     const latestTs1 = f1.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
     const latestTs2 = f2.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
-    
-    const alerts = [
-      ...f1.filter(f => f.timestamp === latestTs1 && f.price_aud > 0 && f.price_aud < threshold),
-      ...f2.filter(f => f.timestamp === latestTs2 && f.price_aud > 0 && f.price_aud < threshold),
-    ].sort((a, b) => a.price_aud - b.price_aud);
-    
-    res.json(alerts);
+
+    const latest1 = f1.filter(f => f.timestamp === latestTs1 && f.price_aud > 0 && f.price_aud < threshold);
+    const latest2 = f2.filter(f => f.timestamp === latestTs2 && f.price_aud > 0 && f.price_aud < threshold);
+
+    const airlines = ['jetstar', 'srilankan'];
+    const alerts = [];
+
+    for (const window of [latest1, latest2]) {
+      for (const airline of airlines) {
+        const best = window
+          .filter(f => f.airline.toLowerCase().includes(airline))
+          .sort((a, b) => a.price_aud - b.price_aud)[0];
+        if (best) alerts.push(best);
+      }
+    }
+
+    res.json(alerts.sort((a, b) => a.price_aud - b.price_aud));
   } catch (err) {
     console.error('[API] alerts error:', err.message);
     res.json([]);
