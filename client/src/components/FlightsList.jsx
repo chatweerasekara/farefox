@@ -73,9 +73,11 @@ function FlightRow({ flight, rank }) {
             A${flight.price_aud.toFixed(0)}
           </p>
           {isAlert ? (
-            <p className="text-xs text-amber-500 font-medium mt-0.5">Under threshold</p>
+           <p className="text-xs text-amber-500 font-medium mt-0.5">Under threshold</p>
           ) : (
-            <p className="text-xs text-gray-300 mt-0.5">Confirm on site</p>
+            <p className="text-xs text-gray-400 mt-0.5">Above threshold</p>
+          )}
+          <p className="text-xs text-gray-300 mt-0.5">Confirm on site</p>
           )}
         </div>
       </div>
