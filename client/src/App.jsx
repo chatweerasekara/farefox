@@ -720,7 +720,11 @@ export default function App() {
               <HeroStat price={cheapest} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} />
               <DateWindowTabs windows={windows} active={activeWindow} onChange={setActiveWindow} />
               <PriceChart history={history} loading={loading} />
-              <FlightsList flights={flights} loading={loading} />
+<FlightsList flights={flights} loading={loading} />
+              <div style={{ display:'flex', gap:10, alignItems:'flex-start', background:'rgba(193,123,42,0.06)', border:'1px solid rgba(193,123,42,0.2)', borderRadius:10, padding:'12px 16px' }}>
+                <span style={{ fontSize:16, flexShrink:0, marginTop:1 }}>⚠️</span>
+                <p style={{ fontSize:13, color:'#7a5020', lineHeight:1.5, margin:0 }}><strong style={{ color:'#5a3a10' }}>Before you book</strong> — Always check provider ratings on Skyscanner. Where possible, book directly with the airline or a highly-rated provider.</p>
+              </div>
               <p className="text-center text-xs text-gray-300 pb-4">
                 Checks daily at 08:00 & 18:00 · Jetstar & SriLankan Airlines · Alert below A$1,100 · One way fares only
               </p>
