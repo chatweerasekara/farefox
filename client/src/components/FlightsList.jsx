@@ -163,7 +163,7 @@ export default function FlightsList({ flights, loading }) {
             </button>
           )}
           <p className="text-xs text-gray-300 text-center mt-4">
-            Prices are indicative and may vary. Always confirm on the airline site before booking.
+            Prices are indicative and may vary. Always confirm pricing on Skyscanner or the airline's website before booking.
           </p>
         </>
       )}
