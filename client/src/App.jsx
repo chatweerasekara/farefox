@@ -313,6 +313,7 @@ function AlertsPage() {
         <span style={{ fontSize:16, flexShrink:0, marginTop:1 }}>📬</span>
         <p style={{ fontSize:13, color:'#1e40af', lineHeight:1.5, margin:0 }}>If you don't receive your first alert, check your <strong>spam or junk folder</strong> and mark Farefox as a trusted sender.</p>
       </div>
+    </div>
   );
 }
 
