@@ -71,13 +71,8 @@ function buildEmailHtml({ sections, threshold, email }) {
         <div style="background:#0a0a0a; padding:24px 28px;">
           <table cellpadding="0" cellspacing="0" border="0">
             <tr>
-              <td style="vertical-align:middle; padding-right:6px;">
-                <svg width="72" height="64" viewBox="0 0 72 64" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="30" cy="32" r="24" fill="#0a0a0a" stroke="#C17B2A" stroke-width="2.5"/>
-                  <text x="30" y="32" text-anchor="middle" dominant-baseline="central" font-size="26">🦊</text>
-                  <path d="M48 12 Q62 4 68 9 Q60 16 53 22 Q50 17 48 12Z" fill="#C17B2A"/>
-                  <path d="M52 22 Q65 15 70 20 Q63 26 57 31 Q54 27 52 22Z" fill="#C17B2A" opacity="0.6"/>
-                </svg>
+<td style="vertical-align:middle; padding-right:8px;">
+                <img src="https://farefox.net/logo.png" width="64" height="64" alt="Farefox" style="display:block;">
               </td>
               <td style="vertical-align:middle;">
                 <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:24px; font-weight:500; letter-spacing:-0.03em; line-height:1;">
