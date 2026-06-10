@@ -67,24 +67,26 @@ function buildEmailHtml({ sections, threshold, email }) {
     <body style="margin:0; padding:0; background:#f9f9f7; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
       <div style="max-width:560px; margin:32px auto; background:#fff; border-radius:16px; border:1px solid #e5e5e3; overflow:hidden;">
 
-        <!-- Header -->
+<!-- Header -->
         <div style="background:#0a0a0a; padding:24px 28px;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div style="position:relative; width:64px; height:64px; flex-shrink:0;">
-              <svg width="64" height="64" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute; top:0; left:0;">
-                <circle cx="26" cy="26" r="18" stroke="#C17B2A" stroke-width="1.5" fill="none"/>
-                <path d="M37 9 Q46 3 52 7 Q47 11 42 16 Q39 13 37 9Z" fill="#C17B2A"/>
-                <path d="M39 16 Q45 12 52 15 Q47 18 43 21 Q41 19 39 16Z" fill="#C17B2A" opacity="0.7"/>
-              </svg>
-              <span style="position:absolute; font-size:26px; line-height:1; top:50%; left:50%; transform:translate(-50%,-50%);">🦊</span>
-            </div>
-            <div>
-              <div style="line-height:1;">
-                <span style="font-size:22px; font-weight:500; letter-spacing:-0.03em; color:#fff; display:inline;">Fare</span><span style="font-size:22px; font-weight:500; letter-spacing:-0.03em; color:#C17B2A; display:inline;">fox</span>
-              </div>
-              <p style="margin:4px 0 0; font-size:12px; color:#666;">Your family's flight radar</p>
-            </div>
-          </div>
+          <table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td style="vertical-align:middle; padding-right:6px;">
+                <svg width="72" height="64" viewBox="0 0 72 64" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="30" cy="32" r="24" fill="#0a0a0a" stroke="#C17B2A" stroke-width="2.5"/>
+                  <text x="30" y="32" text-anchor="middle" dominant-baseline="central" font-size="26">🦊</text>
+                  <path d="M48 12 Q62 4 68 9 Q60 16 53 22 Q50 17 48 12Z" fill="#C17B2A"/>
+                  <path d="M52 22 Q65 15 70 20 Q63 26 57 31 Q54 27 52 22Z" fill="#C17B2A" opacity="0.6"/>
+                </svg>
+              </td>
+              <td style="vertical-align:middle;">
+                <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:24px; font-weight:500; letter-spacing:-0.03em; line-height:1;">
+                  <span style="color:#ffffff;">Fare</span><span style="color:#C17B2A;">fox</span>
+                </div>
+                <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:12px; color:#666; margin-top:3px;">Your family's flight radar</div>
+              </td>
+            </tr>
+          </table>
         </div>
 
         <!-- Alert banner -->
@@ -97,17 +99,27 @@ function buildEmailHtml({ sections, threshold, email }) {
         ${sections.join('<div style="height:1px; background:#f0f0ee; margin:16px 28px;"></div>')}
         <div style="height:20px;"></div>
 
-        <!-- Footer -->
+<!-- Footer -->
         <div style="padding:16px 28px; border-top:1px solid #f0f0ee; background:#fafaf8;">
-          <p style="margin:0; font-size:11px; color:#aaa;">
-            Fares are indicative only. Always confirm on Skyscanner or the airline's website before booking.
-          </p>
+          <table cellpadding="0" cellspacing="0" border="0" style="width:100%; margin-bottom:12px;">
+            <tr>
+              <td style="background:rgba(193,123,42,0.07); border:1px solid rgba(193,123,42,0.2); border-radius:8px; padding:12px 14px;">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="font-size:15px; padding-right:10px; vertical-align:top;">⚠️</td>
+                    <td style="font-size:12px; color:#6b4a1a; line-height:1.5;"><strong>Before you book</strong> — Always check provider ratings on Skyscanner. Where possible, book directly with the airline or a highly-rated provider.</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:0; font-size:11px; color:#aaa;">Fares are indicative only. Always confirm on Skyscanner or the airline's website before booking.</p>
           <p style="margin:6px 0 0; font-size:11px; color:#ccc;">
             You're receiving this because you subscribed to Farefox alerts. &nbsp;
             <a href="${unsubUrl}" style="color:#C17B2A; text-decoration:none;">Unsubscribe</a>
           </p>
         </div>
-
+        
       </div>
     </body>
     </html>
