@@ -306,10 +306,13 @@ function AlertsPage() {
         {loading ? 'Subscribing…' : 'Subscribe to alerts'}
       </button>
 
-      <p className="text-center text-xs text-gray-300 pb-4">
+<p className="text-center text-xs text-gray-300">
         You'll receive an email after each scan when fares drop below your threshold.
       </p>
-    </div>
+      <div style={{ display:'flex', gap:10, alignItems:'flex-start', background:'#f0f7ff', border:'1px solid #bfdbfe', borderRadius:10, padding:'12px 16px' }}>
+        <span style={{ fontSize:16, flexShrink:0, marginTop:1 }}>📬</span>
+        <p style={{ fontSize:13, color:'#1e40af', lineHeight:1.5, margin:0 }}>If you don't receive your first alert, check your <strong>spam or junk folder</strong> and mark Farefox as a trusted sender.</p>
+      </div>
   );
 }
 
