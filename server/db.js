@@ -22,17 +22,30 @@ async function appendFlights(flights) {
 }
 
 async function readFlights(windowId) {
-  const { data, error } = await supabase
-    .from('flights')
-    .select('*')
-    .eq('window_id', windowId)
-    .order('timestamp', { ascending: true })
-    .limit(5000);
-  if (error) {
-    console.error('[DB] Read error:', error.message);
-    return [];
+  let allData = [];
+  let from = 0;
+  const pageSize = 1000;
+  
+  while (true) {
+    const { data, error } = await supabase
+      .from('flights')
+      .select('*')
+      .eq('window_id', windowId)
+      .order('timestamp', { ascending: true })
+      .range(from, from + pageSize - 1);
+    
+    if (error) {
+      console.error('[DB] Read error:', error.message);
+      break;
+    }
+    
+    allData = [...allData, ...data];
+    
+    if (data.length < pageSize) break;
+    from += pageSize;
   }
-  return data.map(r => ({
+  
+  return allData.map(r => ({
     timestamp: r.timestamp,
     window: r.window_id,
     departure_date: r.departure_date,
