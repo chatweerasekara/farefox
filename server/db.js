@@ -27,7 +27,7 @@ async function readFlights(windowId) {
     .select('*')
     .eq('window_id', windowId)
     .order('timestamp', { ascending: true })
-    .range(0, 10000);
+    .range(0, 5000);
   if (error) {
     console.error('[DB] Read error:', error.message);
     return [];
