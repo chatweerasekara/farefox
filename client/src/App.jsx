@@ -603,6 +603,7 @@ function TopNav({ activePage, setActivePage }) {
 export default function App() {
   const [activePage, setActivePage]     = useState('flights');
   const [activeWindow, setActiveWindow] = useState(1);
+  const [direction, setDirection]       = useState('MEL-CMB');
   const [flights, setFlights]           = useState([]);
   const [flights1, setFlights1]         = useState([]);
   const [flights2, setFlights2]         = useState([]);
@@ -620,18 +621,18 @@ export default function App() {
 
   useEffect(() => { activeWindowRef.current = activeWindow; }, [activeWindow]);
 
-  const fetchData = useCallback(async (windowId) => {
+  const fetchData = useCallback(async (windowId, dir = 'MEL-CMB') => {
     setLoading(true);
     try {
       const [flightsRes, historyRes, alertsRes, statusRes, flights1Res, history1Res, flights2Res, history2Res] = await Promise.all([
-        fetch(`${API}/api/flights/latest?window=${windowId}`),
-        fetch(`${API}/api/history?window=${windowId}`),
+        fetch(`${API}/api/flights/latest?window=${windowId}&direction=${dir}`),
+        fetch(`${API}/api/history?window=${windowId}&direction=${dir}`),
         fetch(`${API}/api/alerts`),
         fetch(`${API}/api/status`),
-        fetch(`${API}/api/flights/latest?window=1`),
-        fetch(`${API}/api/history?window=1`),
-        fetch(`${API}/api/flights/latest?window=2`),
-        fetch(`${API}/api/history?window=2`),
+        fetch(`${API}/api/flights/latest?window=1&direction=${dir}`),
+        fetch(`${API}/api/history?window=1&direction=${dir}`),
+        fetch(`${API}/api/flights/latest?window=2&direction=${dir}`),
+        fetch(`${API}/api/history?window=2&direction=${dir}`),
       ]);
       setFlights(await flightsRes.json());
       setHistory(await historyRes.json());
@@ -657,7 +658,7 @@ export default function App() {
     }
   }, []);
 
-  useEffect(() => { fetchData(activeWindow); }, [activeWindow, fetchData]);
+  useEffect(() => { fetchData(activeWindow, direction); }, [activeWindow, direction, fetchData]);
 
   useEffect(() => {
     const socket = io(API, {
@@ -770,7 +771,7 @@ export default function App() {
             <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
               <ChangelogBanner />
               {alerts.length > 0 && <AlertBanner alerts={alerts} />}
-              <HeroStat price={cheapest} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} />
+              <HeroStat price={cheapest} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} direction={direction} onDirectionChange={setDirection} />
               <DateWindowTabs windows={windows} active={activeWindow} onChange={setActiveWindow} />
               <PriceChart history={history} loading={loading} />
 <FlightsList flights={flights} loading={loading} />
