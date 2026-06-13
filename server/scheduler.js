@@ -24,37 +24,59 @@ function buildBookUrl(departure_date) {
 }
 
 function buildWindowSection(flights, windowLabel) {
-  const rows = flights.slice(0, 5).map(f => {
-    const dur = `${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m`;
-    const bookUrl = buildBookUrl(f.departure_date);
-    return `
-      <tr>
-        <td style="padding:10px 12px; border-bottom:1px solid #f0f0ee; font-size:13px; color:#111;">${f.departure_date}</td>
-        <td style="padding:10px 12px; border-bottom:1px solid #f0f0ee; font-size:13px; color:#111;">${f.airline}</td>
-        <td style="padding:10px 12px; border-bottom:1px solid #f0f0ee; font-size:13px; font-weight:600; color:#C17B2A;">A$${f.price_aud.toFixed(0)}</td>
-        <td style="padding:10px 12px; border-bottom:1px solid #f0f0ee; font-size:13px; color:#666;">${f.stops} stop · ${dur}</td>
-        <td style="padding:10px 12px; border-bottom:1px solid #f0f0ee;">
-          <a href="${bookUrl}" style="font-size:12px; color:#C17B2A; text-decoration:none; font-weight:500;">Book →</a>
-        </td>
-      </tr>
+  const airlines = [
+    { name: 'Jetstar', key: 'jetstar', badge: 'JQ', bg: '#FF5A00', color: '#fff' },
+    { name: 'SriLankan Airlines', key: 'srilankan', badge: 'UL', bg: '#003875', color: '#FFD700' },
+  ];
+
+  let airlineSections = '';
+
+  for (const airline of airlines) {
+    const airlineFlights = flights
+      .filter(f => f.airline.toLowerCase().includes(airline.key))
+      .slice(0, 5);
+    if (!airlineFlights.length) continue;
+
+    const rows = airlineFlights.map(f => {
+      const dur = `${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m`;
+      const bookUrl = buildBookUrl(f.departure_date);
+      return `
+        <tr>
+          <td style="padding:8px 12px; border-bottom:1px solid #f0f0ee; font-size:13px; color:#111;">${f.departure_date}</td>
+          <td style="padding:8px 12px; border-bottom:1px solid #f0f0ee; font-size:13px; font-weight:600; color:#C17B2A;">A$${f.price_aud.toFixed(0)}</td>
+          <td style="padding:8px 12px; border-bottom:1px solid #f0f0ee; font-size:13px; color:#666;">${f.stops} stop · ${dur}</td>
+          <td style="padding:8px 12px; border-bottom:1px solid #f0f0ee;">
+            <a href="${bookUrl}" style="font-size:12px; color:#C17B2A; text-decoration:none; font-weight:500;">Book →</a>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    airlineSections += `
+      <div style="margin-bottom:16px;">
+        <div style="margin-bottom:8px;">
+          <span style="font-size:11px; font-weight:600; color:${airline.color}; background:${airline.bg}; padding:2px 8px; border-radius:4px;">${airline.badge}</span>
+          <span style="font-size:11px; color:#aaa; font-weight:500; margin-left:6px;">${airline.name}</span>
+        </div>
+        <table style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th style="text-align:left; padding:6px 12px; font-size:11px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;">Date</th>
+              <th style="text-align:left; padding:6px 12px; font-size:11px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;">Price</th>
+              <th style="text-align:left; padding:6px 12px; font-size:11px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;">Details</th>
+              <th style="padding:6px 12px;"></th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     `;
-  }).join('');
+  }
 
   return `
     <div style="padding:20px 28px 0;">
       <p style="margin:0 0 12px; font-size:12px; font-weight:600; color:#C17B2A; text-transform:uppercase; letter-spacing:0.05em;">${windowLabel}</p>
-      <table style="width:100%; border-collapse:collapse;">
-        <thead>
-          <tr>
-            <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;">Date</th>
-            <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;">Airline</th>
-            <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;">Price</th>
-            <th style="text-align:left; padding:8px 12px; font-size:11px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;">Details</th>
-            <th style="padding:8px 12px;"></th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
+      ${airlineSections}
     </div>
   `;
 }
