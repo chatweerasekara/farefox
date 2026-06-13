@@ -68,7 +68,7 @@ function FlightRow({ flight, rank }) {
           {code}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-gray-900 text-sm truncate">{flight.airline}</p>
+          <p className="font-semibold text-gray-900 text-sm truncate">{formatAirline(flight.airline)}</p>
           <p className="text-xs text-gray-400 mt-0.5">{fmtDate(flight.departure_date)}</p>
         </div>
         <div className="text-right flex-shrink-0">
