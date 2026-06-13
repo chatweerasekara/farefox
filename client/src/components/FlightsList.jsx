@@ -40,7 +40,10 @@ function getWhatsAppShareText(flight) {
   const text = `✈ Farefox found ${flight.airline} MEL→CMB on ${fmtDate(flight.departure_date)} for A$${flight.price_aud.toFixed(0)} (one way). Check it out: https://farefox-seven.vercel.app`;
   return `https://wa.me/?text=${encodeURIComponent(text)}`;
 }
-
+function formatAirline(name) {
+  if (!name) return name;
+  return name.replace('SriLankan', 'Sri-Lankan');
+}
 function FlightRow({ flight, rank }) {
   const isAlert = flight.price_aud < 1100;
   const bookingUrl = getSkyscannerUrl(flight.departure_date);
