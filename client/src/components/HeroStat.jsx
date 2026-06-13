@@ -1,6 +1,6 @@
 const THRESHOLD = 1100;
 
-export default function HeroStat({ price, window, windowMeta, loading, history }) {
+export default function HeroStat({ price, window, windowMeta, loading, history, direction, onDirectionChange }) {
   const isBelow = price !== null && price < THRESHOLD;
   const isAbove = price !== null && price >= THRESHOLD;
 
@@ -63,11 +63,15 @@ export default function HeroStat({ price, window, windowMeta, loading, history }
             </div>
           )}
 
-          <div
-            className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full mt-3"
-            style={{background: 'rgba(255,255,255,0.07)', color: '#ccc', border: '0.5px solid rgba(255,255,255,0.12)'}}
-          >
-            ✈ One way · MEL → CMB
+          <div className="inline-flex mt-3" style={{background: '#1a1a1a', borderRadius: 20, padding: 3}}>
+            <button onClick={() => onDirectionChange('MEL-CMB')}
+              style={{fontSize:12, fontWeight:500, color: direction === 'MEL-CMB' ? '#fff' : '#555', background: direction === 'MEL-CMB' ? '#C17B2A' : 'transparent', border:'none', borderRadius:16, padding:'5px 14px', cursor:'pointer'}}>
+              ✈ MEL → CMB
+            </button>
+            <button onClick={() => onDirectionChange('CMB-MEL')}
+              style={{fontSize:12, fontWeight:500, color: direction === 'CMB-MEL' ? '#fff' : '#555', background: direction === 'CMB-MEL' ? '#C17B2A' : 'transparent', border:'none', borderRadius:16, padding:'5px 14px', cursor:'pointer'}}>
+              ✈ CMB → MEL
+            </button>
           </div>
 
           {window && (
