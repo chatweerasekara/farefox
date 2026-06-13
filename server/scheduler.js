@@ -26,7 +26,7 @@ function buildBookUrl(departure_date) {
 function buildWindowSection(flights, windowLabel) {
   const airlines = [
     { name: 'Jetstar', key: 'jetstar', badge: 'JQ', bg: '#FF5A00', color: '#fff' },
-    { name: 'SriLankan Airlines', key: 'srilankan', badge: 'UL', bg: '#003875', color: '#FFD700' },
+    { name: 'Sri-Lankan Airlines', key: 'srilankan', badge: 'UL', bg: '#003875', color: '#FFD700' },
   ];
 
   let airlineSections = '';
