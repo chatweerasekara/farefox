@@ -16,12 +16,13 @@ async function appendFlights(flights) {
     duration_mins: f.duration_mins,
     departure_time: f.departure_time || null,
     arrival_time: f.arrival_time || null,
+    direction: f.direction || 'MEL-CMB',
   }));
   const { error } = await supabase.from('flights').insert(rows);
   if (error) console.error('[DB] Insert error:', error.message);
 }
 
-async function readFlights(windowId) {
+async function readFlights(windowId, direction = 'MEL-CMB') {
   let allData = [];
   let from = 0;
   const pageSize = 1000;
@@ -31,6 +32,7 @@ async function readFlights(windowId) {
       .from('flights')
       .select('*')
       .eq('window_id', windowId)
+      .eq('direction', direction)
       .order('timestamp', { ascending: true })
       .range(from, from + pageSize - 1);
     
@@ -55,6 +57,7 @@ async function readFlights(windowId) {
     duration_mins: r.duration_mins,
     departure_time: r.departure_time,
     arrival_time: r.arrival_time,
+    direction: r.direction,
   }));
 }
 
@@ -70,10 +73,10 @@ async function getScanCount() {
   return unique.size;
 }
 
-async function addSubscriber({ email, threshold, window_1, window_2 }) {
+async function addSubscriber({ email, threshold, window_1, window_2, mel_cmb = true, cmb_mel = true }) {
   const { data, error } = await supabase
     .from('subscribers')
-    .upsert({ email, threshold, window_1, window_2 }, { onConflict: 'email' })
+    .upsert({ email, threshold, window_1, window_2, mel_cmb, cmb_mel }, { onConflict: 'email' })
     .select()
     .single();
   if (error) {
