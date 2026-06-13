@@ -21,9 +21,7 @@ const CHANGELOG = {
     'Provider booking tip added to email footer and flight list',
     'Spam/junk folder reminder added to Alerts page',
     'CMB → MEL reverse direction fares now available',
-    'Direction toggle added to flights page and alerts subscription',
-    'Price history and flight list update when switching direction',
-    'Changelog banner added to flights page',
+    'Direction toggle added to flights page and alerts subscription',  
   ],
 };
 
