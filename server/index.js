@@ -52,7 +52,8 @@ app.get('/api/status', async (_req, res) => {
 app.get('/api/flights/latest', async (req, res) => {
   try {
     const wid = parseInt(req.query.window) || 1;
-    const flights = await readFlights(wid);
+    const direction = req.query.direction || 'MEL-CMB';
+    const flights = await readFlights(wid, direction);
     if (!flights.length) return res.json([]);
     const latestTs = flights.reduce((max, f) => f.timestamp > max ? f.timestamp : max, '');
     const latestFlights = flights.filter(f => f.timestamp === latestTs);
@@ -73,7 +74,8 @@ app.get('/api/flights/latest', async (req, res) => {
 app.get('/api/history', async (req, res) => {
   try {
     const wid = parseInt(req.query.window) || 1;
-    const flights = await readFlights(wid);
+    const direction = req.query.direction || 'MEL-CMB';
+    const flights = await readFlights(wid, direction);
     const byDate = {};
     for (const f of flights) {
 const d = new Date(f.timestamp).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne', year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-');
@@ -122,7 +124,7 @@ app.get('/api/alerts', async (_req, res) => {
 
 // POST /api/subscribe
 app.post('/api/subscribe', async (req, res) => {
-  const { email, threshold, window_1, window_2 } = req.body;
+  const { email, threshold, window_1, window_2, mel_cmb, cmb_mel } = req.body;
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ error: 'Valid email required' });
   }
@@ -132,6 +134,8 @@ app.post('/api/subscribe', async (req, res) => {
       threshold: parseInt(threshold) || 1100,
       window_1: window_1 !== false,
       window_2: window_2 !== false,
+      mel_cmb: mel_cmb !== false,
+      cmb_mel: cmb_mel === true,
     });
     res.json({ success: true, subscriber });
   } catch (err) {
