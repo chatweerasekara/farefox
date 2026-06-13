@@ -84,7 +84,7 @@ function buildWindowSection(flights, windowLabel) {
   `;
 }
 
-function buildEmailHtml({ sections, threshold, email }) {
+function buildEmailHtml({ sections, threshold, email, direction = 'MEL-CMB' }) {
   const unsubUrl = `https://farefox-production.up.railway.app/api/unsubscribe?email=${encodeURIComponent(email)}`;
   return `
     <!DOCTYPE html>
@@ -112,7 +112,7 @@ function buildEmailHtml({ sections, threshold, email }) {
         <!-- Alert banner -->
         <div style="background:rgba(193,123,42,0.08); border-bottom:1px solid rgba(193,123,42,0.15); padding:16px 28px;">
           <p style="margin:0; font-size:13px; font-weight:600; color:#C17B2A;">🔔 Fares below A$${threshold} found</p>
-          <p style="margin:4px 0 0; font-size:12px; color:#888;">MEL → CMB</p>
+          <p style="margin:4px 0 0; font-size:12px; color:#888;">${direction === 'CMB-MEL' ? 'CMB → MEL' : 'MEL → CMB'}</p>
         </div>
 
         <!-- Window sections -->
@@ -161,13 +161,18 @@ async function sendEmailAlerts(allFlights) {
     const subThreshold = subscriber.threshold ?? threshold;
     const sections = [];
 
-    for (const win of windows) {
-      if (!subscriber[win.key]) continue;
-      const flights = allFlights
-        .filter(f => f.window === win.id && f.price_aud > 0 && f.price_aud < subThreshold && f.direction === 'MEL-CMB')
-        .sort((a, b) => a.price_aud - b.price_aud);
-      if (!flights.length) continue;
-      sections.push(buildWindowSection(flights, win.label));
+    for (const dir of ['MEL-CMB', 'CMB-MEL']) {
+      if (dir === 'MEL-CMB' && subscriber.mel_cmb === false) continue;
+      if (dir === 'CMB-MEL' && !subscriber.cmb_mel) continue;
+
+      for (const win of windows) {
+        if (!subscriber[win.key]) continue;
+        const flights = allFlights
+          .filter(f => f.window === win.id && f.price_aud > 0 && f.price_aud < subThreshold && f.direction === dir)
+          .sort((a, b) => a.price_aud - b.price_aud);
+        if (!flights.length) continue;
+        sections.push(buildWindowSection(flights, `${win.label} · ${dir === 'CMB-MEL' ? 'CMB → MEL' : 'MEL → CMB'}`));
+      }
     }
 
     if (!sections.length) continue;
@@ -230,7 +235,7 @@ async function runScrape(includeReverse = true) {
         .sort((a, b) => a.price_aud - b.price_aud)[0];
       if (best) {
         const dur = `${Math.floor(best.duration_mins / 60)}h ${best.duration_mins % 60}m`;
-        const bookUrl = buildBookUrl(best.departure_date);
+        const bookUrl = buildBookUrl(best.departure_date, best.direction);
         msgParts.push(`${win.label}: ${best.airline} ${best.departure_date} AUD${best.price_aud.toFixed(0)} ${dur} Book: ${bookUrl}`);
       }
     }
