@@ -219,7 +219,7 @@ function WindowsPage({ windows, flights1, flights2, history1, history2, status, 
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-3 pt-4 border-t border-gray-50">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4 border-t border-gray-50">
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-gray-400">Cheapest</span>
                 <span className="text-sm font-medium text-gray-900">
