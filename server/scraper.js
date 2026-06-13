@@ -23,8 +23,26 @@ async function searchFlightsForDate(date) {
   });
   return data;
 }
-
-function extractTargetFlights(apiData, date, windowId, timestamp) {
+async function searchFlightsForDateReverse(date) {
+  const { data } = await axios.get(`https://${HOST}/flights/search-one-way`, {
+    headers: {
+      'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+      'X-RapidAPI-Host': HOST,
+    },
+    params: {
+      fromEntityId: 'CMB',
+      toEntityId: 'MEL',
+      departDate: date,
+      adults: '1',
+      currency: 'AUD',
+      market: 'AU',
+      countryCode: 'AU',
+    },
+    timeout: 20000,
+  });
+  return data;
+}
+function extractTargetFlights(apiData, date, windowId, timestamp, direction = 'MEL-CMB') {
   const itineraries = apiData?.data?.itineraries ?? [];
   return itineraries
     .filter(it => {
@@ -45,10 +63,30 @@ function extractTargetFlights(apiData, date, windowId, timestamp) {
         duration_mins: leg.durationInMinutes ?? 0,
         departure_time: leg.departure ?? '',
         arrival_time: leg.arrival ?? '',
+        direction,
       };
     });
 }
 
+async function scrapeWindowReverse(window) {
+  const scanTimestamp = new Date().toISOString();
+  const sampledDates = window.dates;
+  console.log(`[Scraper] Window ${window.id} "${window.label}" CMB→MEL — ${sampledDates.length} dates`);
+  const results = [];
+  for (const date of sampledDates) {
+    try {
+      console.log(`[Scraper]   → ${date}`);
+      const data = await searchFlightsForDateReverse(date);
+      const flights = extractTargetFlights(data, date, window.id, scanTimestamp, 'CMB-MEL');
+      results.push(...flights);
+      await sleep(1200);
+    } catch (err) {
+      console.error(`[Scraper]   ✗ ${date}: ${err.message}`);
+    }
+  }
+  console.log(`[Scraper] Window ${window.id} CMB→MEL done — ${results.length} target flights found`);
+  return results;
+}
 async function scrapeWindow(window) {
   const scanTimestamp = new Date().toISOString();
   const sampledDates = window.dates;
@@ -69,4 +107,4 @@ async function scrapeWindow(window) {
   return results;
 }
 
-module.exports = { scrapeWindow };
+module.exports = { scrapeWindow, scrapeWindowReverse };
