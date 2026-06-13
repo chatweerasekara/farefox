@@ -512,9 +512,9 @@ function AboutPage({ status, isAdmin }) {
         <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-3">Coverage</p>
         <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
           {[
-            { label: 'Route', value: 'Melbourne → Colombo' },
+            { label: 'Route', value: 'Melbourne ↔ Colombo' },
             { label: 'Fare type', value: 'One-way · Economy' },
-            { label: 'Scan schedule', value: '8:00 am & 6:00 pm daily' },
+            { label: 'Scan schedule', value: '8:00 am (both) · 6:00 pm (MEL→CMB)' },
           ].map(({ label, value }) => (
             <div key={label} className="flex items-center justify-between px-5 py-3.5">
               <span className="text-xs text-gray-400">{label}</span>
