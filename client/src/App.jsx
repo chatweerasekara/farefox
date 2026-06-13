@@ -153,7 +153,14 @@ function RadarOverlay({ scraping, scanStep, direction }) {
 }
 
 // ── Windows Page ───────────────────────────────────────────────────────────────
-function WindowsPage({ windows, flights1, flights2, history1, history2, status }) {
+function WindowsPage({ windows, flights1, flights2, history1, history2, status, flights1r, flights2r, history1r, history2r }) {
+  const [winDirection, setWinDirection] = useState('MEL-CMB');
+
+  const AVG_ROUND_TRIP = {
+    1: { JQ: 1850, UL: 2400 },
+    2: { JQ: 1650, UL: 2200 },
+  };
+
   const getWindowData = (wid, flights, history) => {
     const cheapest = flights.length > 0 ? Math.round(Math.min(...flights.map(f => f.price_aud))) : null;
     const today = history[history.length - 1]?.minPrice ?? null;
@@ -165,15 +172,37 @@ function WindowsPage({ windows, flights1, flights2, history1, history2, status }
       : null;
     return { cheapest, diff, daysUntil };
   };
-  const w1 = getWindowData(1, flights1, history1);
-  const w2 = getWindowData(2, flights2, history2);
+
+  const getActiveData = (wid) => {
+    if (winDirection === 'CMB-MEL') {
+      return getWindowData(wid, wid === 1 ? flights1r : flights2r, wid === 1 ? history1r : history2r);
+    }
+    return getWindowData(wid, wid === 1 ? flights1 : flights2, wid === 1 ? history1 : history2);
+  };
+
+  const w1 = getActiveData(1);
+  const w2 = getActiveData(2);
   const windowData = [w1, w2];
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-8 space-y-4">
       <p className="text-xs font-medium text-gray-400 uppercase tracking-widest">Travel windows</p>
+
+      {/* Direction toggle */}
+      <div style={{ display:'inline-flex', background:'#e5e7eb', borderRadius:10, padding:3 }}>
+        <button onClick={() => setWinDirection('MEL-CMB')}
+          style={{ fontSize:12, fontWeight:500, color: winDirection === 'MEL-CMB' ? '#fff' : '#888', background: winDirection === 'MEL-CMB' ? '#C17B2A' : 'transparent', border:'none', borderRadius:8, padding:'6px 16px', cursor:'pointer' }}>
+          ✈ MEL → CMB
+        </button>
+        <button onClick={() => setWinDirection('CMB-MEL')}
+          style={{ fontSize:12, fontWeight:500, color: winDirection === 'CMB-MEL' ? '#fff' : '#888', background: winDirection === 'CMB-MEL' ? '#C17B2A' : 'transparent', border:'none', borderRadius:8, padding:'6px 16px', cursor:'pointer' }}>
+          ✈ CMB → MEL
+        </button>
+      </div>
+
       {windows.map((win, i) => {
         const { cheapest, diff, daysUntil } = windowData[i];
+        const avg = AVG_ROUND_TRIP[win.id];
         return (
           <div key={win.id} className="bg-white rounded-2xl border border-gray-100 p-5">
             <div className="flex items-start justify-between mb-4">
@@ -190,7 +219,7 @@ function WindowsPage({ windows, flights1, flights2, history1, history2, status }
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-50">
+            <div className="grid grid-cols-4 gap-3 pt-4 border-t border-gray-50">
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-gray-400">Cheapest</span>
                 <span className="text-sm font-medium text-gray-900">
@@ -210,6 +239,17 @@ function WindowsPage({ windows, flights1, flights2, history1, history2, status }
                 <span className={`text-sm font-medium ${diff === null ? 'text-gray-400' : diff < 0 ? 'text-green-500' : diff > 0 ? 'text-red-400' : 'text-gray-400'}`}>
                   {diff === null ? '—' : diff < 0 ? `↓ $${Math.abs(diff)}` : diff > 0 ? `↑ $${diff}` : 'No change'}
                 </span>
+              </div>
+              <div className="flex flex-col gap-1" style={{ background:'#f9f9f7', borderRadius:8, padding:'8px 10px' }}>
+                <span className="text-xs text-gray-400">Avg round trip</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">JQ</span>
+                  <span className="text-xs font-medium text-gray-900">~A${avg.JQ.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-500">UL</span>
+                  <span className="text-xs font-medium text-gray-900">~A${avg.UL.toLocaleString()}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -640,6 +680,10 @@ export default function App() {
   const [history, setHistory]           = useState([]);
   const [history1, setHistory1]         = useState([]);
   const [history2, setHistory2]         = useState([]);
+  const [flights1r, setFlights1r]       = useState([]);
+  const [flights2r, setFlights2r]       = useState([]);
+  const [history1r, setHistory1r]       = useState([]);
+  const [history2r, setHistory2r]       = useState([]);
   const [alerts, setAlerts]             = useState([]);
   const [status, setStatus]             = useState(null);
   const [loading, setLoading]           = useState(true);
@@ -654,7 +698,7 @@ export default function App() {
   const fetchData = useCallback(async (windowId, dir = 'MEL-CMB') => {
     setLoading(true);
     try {
-      const [flightsRes, historyRes, alertsRes, statusRes, flights1Res, history1Res, flights2Res, history2Res] = await Promise.all([
+      const [flightsRes, historyRes, alertsRes, statusRes, flights1Res, history1Res, flights2Res, history2Res, flights1rRes, history1rRes, flights2rRes, history2rRes] = await Promise.all([
         fetch(`${API}/api/flights/latest?window=${windowId}&direction=${dir}`),
         fetch(`${API}/api/history?window=${windowId}&direction=${dir}`),
         fetch(`${API}/api/alerts`),
@@ -663,6 +707,10 @@ export default function App() {
         fetch(`${API}/api/history?window=1&direction=${dir}`),
         fetch(`${API}/api/flights/latest?window=2&direction=${dir}`),
         fetch(`${API}/api/history?window=2&direction=${dir}`),
+        fetch(`${API}/api/flights/latest?window=1&direction=CMB-MEL`),
+        fetch(`${API}/api/history?window=1&direction=CMB-MEL`),
+        fetch(`${API}/api/flights/latest?window=2&direction=CMB-MEL`),
+        fetch(`${API}/api/history?window=2&direction=CMB-MEL`),
       ]);
       setFlights(await flightsRes.json());
       setHistory(await historyRes.json());
@@ -671,6 +719,10 @@ export default function App() {
       setHistory1(await history1Res.json());
       setFlights2(await flights2Res.json());
       setHistory2(await history2Res.json());
+      setFlights1r(await flights1rRes.json());
+      setHistory1r(await history1rRes.json());
+      setFlights2r(await flights2rRes.json());
+      setHistory2r(await history2rRes.json());
       const s = await statusRes.json();
       setStatus(s);
       const win = s.windows?.find(w => w.id === windowId);
@@ -813,7 +865,9 @@ export default function App() {
           )}
           {activePage === 'windows' && (
             <WindowsPage windows={windows} flights1={flights1} flights2={flights2}
-              history1={history1} history2={history2} status={status} />
+              history1={history1} history2={history2} status={status}
+              flights1r={flights1r} flights2r={flights2r}
+              history1r={history1r} history2r={history2r} />
           )}
           {activePage === 'alerts' && <AlertsPage />}
           {activePage === 'about' && <AboutPage status={status} isAdmin={isAdmin} />}
