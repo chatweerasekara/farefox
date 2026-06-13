@@ -21,11 +21,14 @@ function fmtDate(dateStr) {
   } catch { return dateStr; }
 }
 
-function getSkyscannerUrl(date) {
+function getSkyscannerUrl(date, direction = 'MEL-CMB') {
   const d = new Date(date);
   const yy = String(d.getFullYear()).slice(2);
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   const dd = String(d.getDate()).padStart(2, '0');
+  if (direction === 'CMB-MEL') {
+    return `https://www.skyscanner.com.au/transport/flights/cmb/mel/${yy}${mm}${dd}/?adults=1&cabinclass=economy&rtn=0&currency=AUD`;
+  }
   return `https://www.skyscanner.com.au/transport/flights/mel/cmb/${yy}${mm}${dd}/?adults=1&cabinclass=economy&rtn=0&currency=AUD`;
 }
 
@@ -46,7 +49,7 @@ function formatAirline(name) {
 }
 function FlightRow({ flight, rank }) {
   const isAlert = flight.price_aud < 1100;
-  const bookingUrl = getSkyscannerUrl(flight.departure_date);
+  const bookingUrl = getSkyscannerUrl(flight.departure_date, flight.direction);
   const shareUrl = getWhatsAppShareText(flight);
   const code = getAirlineCode(flight.airline);
 
