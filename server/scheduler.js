@@ -226,8 +226,10 @@ async function runScrape(includeReverse = true) {
     const threshold = parseFloat(process.env.PRICE_ALERT_THRESHOLD ?? 1100);
     const msgParts = [];
     const windows = [
-      { id: 1, label: 'Xmas/NY', flights: flights1 },
-      { id: 2, label: 'SL New Year', flights: flights2 },
+      { id: 1, label: 'Xmas/NY MEL→CMB', flights: flights1 },
+      { id: 2, label: 'SL New Year MEL→CMB', flights: flights2 },
+      { id: 1, label: 'Xmas/NY CMB→MEL', flights: flights1r },
+      { id: 2, label: 'SL New Year CMB→MEL', flights: flights2r },
     ];
     for (const win of windows) {
       const best = win.flights
@@ -240,7 +242,7 @@ async function runScrape(includeReverse = true) {
       }
     }
     if (msgParts.length > 0) {
-      await sendWhatsAppAlert(`Farefox MEL->CMB\n${msgParts.join('\n')}`);
+      await sendWhatsAppAlert(`Farefox MEL↔CMB\n${msgParts.join('\n')}`);
     }
 
     // Email alerts (new)
