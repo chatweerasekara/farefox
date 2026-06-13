@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { scrapeWindow } = require('./scraper');
+const { scrapeWindow, scrapeWindowReverse } = require('./scraper');
 const { getWindow1, getWindow2 } = require('./dateWindows');
 const { appendFlights, getSubscribers } = require('./db');
 const { sendWhatsAppAlert } = require('./alerts');
@@ -161,7 +161,7 @@ async function sendEmailAlerts(allFlights) {
     for (const win of windows) {
       if (!subscriber[win.key]) continue;
       const flights = allFlights
-        .filter(f => f.window === win.id && f.price_aud > 0 && f.price_aud < subThreshold)
+        .filter(f => f.window === win.id && f.price_aud > 0 && f.price_aud < subThreshold && f.direction === 'MEL-CMB')
         .sort((a, b) => a.price_aud - b.price_aud);
       if (!flights.length) continue;
       sections.push(buildWindowSection(flights, win.label));
@@ -173,7 +173,7 @@ async function sendEmailAlerts(allFlights) {
       await resend.emails.send({
         from: 'Farefox <alerts@farefox.net>',
         to: subscriber.email,
-        subject: `🦊 MEL→CMB fares below A$${subThreshold}`,
+        subject: `🦊 Flight fares below A$${subThreshold}`,
         html: buildEmailHtml({ sections, threshold: subThreshold, email: subscriber.email }),
       });
       console.log(`[Email] Sent alert to ${subscriber.email}`);
@@ -183,7 +183,7 @@ async function sendEmailAlerts(allFlights) {
   }
 }
 
-async function runScrape() {
+async function runScrape(includeReverse = true) {
   if (isRunning) {
     console.log('[Scheduler] Scrape already in progress, skipping.');
     return;
@@ -202,7 +202,16 @@ async function runScrape() {
     const flights2 = await scrapeWindow(w2);
     emitStatus({ scanStep: 2 });
 
-    const allFlights = [...flights1, ...flights2];
+    let flights1r = [];
+    let flights2r = [];
+    if (includeReverse) {
+      flights1r = await scrapeWindowReverse(w1);
+      emitStatus({ scanStep: 3 });
+      flights2r = await scrapeWindowReverse(w2);
+      emitStatus({ scanStep: 4 });
+    }
+
+    const allFlights = [...flights1, ...flights2, ...flights1r, ...flights2r];
     if (allFlights.length > 0) appendFlights(allFlights);
 
     // WhatsApp alert
@@ -242,11 +251,15 @@ async function runScrape() {
 }
 
 function startScheduler() {
-  cron.schedule('0 8,18 * * *', () => {
-    console.log('[Scheduler] Cron fired — 08:00/18:00 Melbourne daily scrape');
-    runScrape();
+  cron.schedule('0 8 * * *', () => {
+    console.log('[Scheduler] Cron fired — 08:00 Melbourne daily scrape (MEL↔CMB)');
+    runScrape(true);
   }, { timezone: 'Australia/Melbourne' });
-  console.log('[Scheduler] Daily scrape scheduled at 08:00 & 18:00 Australia/Melbourne');
+  cron.schedule('0 18 * * *', () => {
+    console.log('[Scheduler] Cron fired — 18:00 Melbourne daily scrape (MEL→CMB only)');
+    runScrape(false);
+  }, { timezone: 'Australia/Melbourne' });
+  console.log('[Scheduler] Daily scrape scheduled at 08:00 (both) & 18:00 (MEL→CMB) Australia/Melbourne');
 }
 
 function getStatus() {
