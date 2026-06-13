@@ -84,7 +84,7 @@ function buildWindowSection(flights, windowLabel) {
   `;
 }
 
-function buildEmailHtml({ sections, threshold, email, direction = 'MEL-CMB' }) {
+function buildEmailHtml({ sections, threshold, email }) {
   const unsubUrl = `https://farefox-production.up.railway.app/api/unsubscribe?email=${encodeURIComponent(email)}`;
   return `
     <!DOCTYPE html>
@@ -112,7 +112,7 @@ function buildEmailHtml({ sections, threshold, email, direction = 'MEL-CMB' }) {
         <!-- Alert banner -->
         <div style="background:rgba(193,123,42,0.08); border-bottom:1px solid rgba(193,123,42,0.15); padding:16px 28px;">
           <p style="margin:0; font-size:13px; font-weight:600; color:#C17B2A;">🔔 Fares below A$${threshold} found</p>
-          <p style="margin:4px 0 0; font-size:12px; color:#888;">${direction === 'CMB-MEL' ? 'CMB → MEL' : 'MEL → CMB'}</p>
+          <p style="margin:4px 0 0; font-size:12px; color:#888;">MEL ↔ CMB</p>
         </div>
 
         <!-- Window sections -->
