@@ -18,8 +18,11 @@ function emitStatus(extra = {}) {
   if (io) io.emit('status', { lastRun, lastStatus, isRunning, ...extra });
 }
 
-function buildBookUrl(departure_date) {
+function buildBookUrl(departure_date, direction = 'MEL-CMB') {
   const depDate = departure_date.replace(/-/g, '').slice(2);
+  if (direction === 'CMB-MEL') {
+    return `https://www.skyscanner.com.au/transport/flights/cmb/mel/${depDate}/?adults=1&cabinclass=economy&rtn=0&currency=AUD`;
+  }
   return `https://www.skyscanner.com.au/transport/flights/mel/cmb/${depDate}/?adults=1&cabinclass=economy&rtn=0&currency=AUD`;
 }
 
@@ -39,7 +42,7 @@ function buildWindowSection(flights, windowLabel) {
 
     const rows = airlineFlights.map(f => {
       const dur = `${Math.floor(f.duration_mins / 60)}h ${f.duration_mins % 60}m`;
-      const bookUrl = buildBookUrl(f.departure_date);
+      const bookUrl = buildBookUrl(f.departure_date, f.direction);
       return `
         <tr>
           <td style="padding:8px 12px; border-bottom:1px solid #f0f0ee; font-size:13px; color:#111;">${f.departure_date}</td>
