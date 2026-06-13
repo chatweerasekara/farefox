@@ -12,7 +12,55 @@ const WINDOWS = [
   { id: 1, label: 'Christmas & New Year', season: 'Summer', dateRange: 'Dec 10 – Jan 20' },
   { id: 2, label: 'Sri Lankan New Year', season: 'Autumn', dateRange: 'Apr 5 – Apr 20' },
 ];
+const CHANGELOG = {
+  version: 'June 2026',
+  items: [
+    'FareFox website now live at www.farefox.net',
+    'Email alerts now sent from alerts@farefox.net',
+    'Sri-Lankan Airlines fares now shown separately in email alerts',
+    'Provider booking tip added to email footer and flight list',
+    'Spam/junk folder reminder added to Alerts page',
+  ],
+};
 
+function ChangelogBanner() {
+  const [dismissed, setDismissed] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  if (dismissed) return null;
+  return (
+    <div style={{ background:'rgba(22,163,74,0.08)', border:'1px solid rgba(22,163,74,0.2)', borderRadius:12, overflow:'hidden', marginBottom:0 }}>
+      <div style={{ padding:'16px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer' }}
+        onClick={() => setExpanded(v => !v)}>
+        <div style={{ display:'flex', alignItems:'flex-start', gap:12 }}>
+          <span style={{ color:'#16a34a', fontSize:16, marginTop:2 }}>▲</span>
+          <div>
+            <p style={{ fontSize:14, fontWeight:600, color:'#111', margin:0 }}>
+              What's new · <span style={{ color:'#16a34a' }}>{CHANGELOG.version} update</span>
+            </p>
+            <p style={{ fontSize:12, color:'#aaa', marginTop:2 }}>{CHANGELOG.items[0]} · and more</p>
+          </div>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:12, flexShrink:0 }}>
+          <span style={{ fontSize:12, color:'#16a34a', fontWeight:500 }}>{expanded ? 'Show less ▴' : 'Show more ▾'}</span>
+          <button onClick={e => { e.stopPropagation(); setDismissed(true); }}
+            style={{ fontSize:18, color:'#aaa', background:'none', border:'none', cursor:'pointer', padding:'2px 6px', lineHeight:1 }}>×</button>
+        </div>
+      </div>
+      {expanded && (
+        <div style={{ padding:'12px 20px 16px 44px', borderTop:'1px solid rgba(22,163,74,0.15)' }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {CHANGELOG.items.map((item, i) => (
+              <div key={i} style={{ display:'flex', gap:8, alignItems:'flex-start' }}>
+                <span style={{ color:'#16a34a', fontSize:13, flexShrink:0 }}>✓</span>
+                <span style={{ fontSize:13, color:'#333' }}>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 // ── Radar Overlay ─────────────────────────────────────────────────────────────
 function RadarOverlay({ scraping, scanStep }) {
   const statusItems = [
@@ -720,6 +768,7 @@ export default function App() {
         <div className="pb-20 md:pb-0">
           {activePage === 'flights' && (
             <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
+              <ChangelogBanner />
               {alerts.length > 0 && <AlertBanner alerts={alerts} />}
               <HeroStat price={cheapest} window={activeWin} windowMeta={windowMeta} loading={loading} history={history} />
               <DateWindowTabs windows={windows} active={activeWindow} onChange={setActiveWindow} />
