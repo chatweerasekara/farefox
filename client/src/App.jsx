@@ -223,6 +223,8 @@ function AlertsPage() {
   const [threshold, setThreshold] = useState(1100);
   const [window1, setWindow1]     = useState(true);
   const [window2, setWindow2]     = useState(true);
+  const [melCmb, setMelCmb] = useState(true);
+  const [cmbMel, setCmbMel] = useState(true);
   const [loading, setLoading]     = useState(false);
   const [success, setSuccess]     = useState(false);
   const [error, setError]         = useState('');
@@ -242,7 +244,7 @@ function AlertsPage() {
       const res = await fetch(`${API}/api/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, threshold, window_1: window1, window_2: window2 }),
+        body: JSON.stringify({ email, threshold, window_1: window1, window_2: window2, mel_cmb: melCmb, cmb_mel: cmbMel }),
       });
       if (!res.ok) throw new Error('Failed to subscribe');
       setSuccess(true);
@@ -313,7 +315,33 @@ function AlertsPage() {
           <span className="text-xs text-gray-300">A$1,500</span>
         </div>
       </div>
-
+{/* Direction toggles */}
+      <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
+        <div className="flex items-center justify-between px-5 py-4">
+          <div>
+            <p className="text-sm font-medium text-gray-800">MEL → CMB</p>
+            <p className="text-xs text-gray-400 mt-0.5">Melbourne to Colombo</p>
+          </div>
+          <button onClick={() => setMelCmb(v => !v)}
+            className="relative flex-shrink-0 w-10 h-6 rounded-full transition-all"
+            style={{ background: melCmb ? '#C17B2A' : '#e5e5e3' }}>
+            <span className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all"
+              style={{ left: melCmb ? '22px' : '2px' }} />
+          </button>
+        </div>
+        <div className="flex items-center justify-between px-5 py-4">
+          <div>
+            <p className="text-sm font-medium text-gray-800">CMB → MEL</p>
+            <p className="text-xs text-gray-400 mt-0.5">Colombo to Melbourne</p>
+          </div>
+          <button onClick={() => setCmbMel(v => !v)}
+            className="relative flex-shrink-0 w-10 h-6 rounded-full transition-all"
+            style={{ background: cmbMel ? '#C17B2A' : '#e5e5e3' }}>
+            <span className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all"
+              style={{ left: cmbMel ? '22px' : '2px' }} />
+          </button>
+        </div>
+      </div>
       {/* Window toggles */}
       <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-50">
         <div className="flex items-center justify-between px-5 py-4">
