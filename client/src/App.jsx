@@ -64,7 +64,7 @@ function ChangelogBanner() {
   );
 }
 // ── Radar Overlay ─────────────────────────────────────────────────────────────
-function RadarOverlay({ scraping, scanStep }) {
+function RadarOverlay({ scraping, scanStep, direction }) {
   const statusItems = [
     { label: 'Christmas & New Year window', done: scanStep >= 1 },
     { label: 'Sri Lankan New Year window', done: scanStep >= 2 },
@@ -114,7 +114,7 @@ function RadarOverlay({ scraping, scanStep }) {
         </div>
         <div style={{ textAlign: 'center' }}>
           <p style={{ color: '#fff', fontWeight: 500, fontSize: 15 }}>Scanning for fares…</p>
-          <p style={{ color: '#C17B2A', fontWeight: 500, fontSize: 13, marginTop: 6 }}>MEL → CMB</p>
+          <p style={{ color: '#C17B2A', fontWeight: 500, fontSize: 13, marginTop: 6 }}>{direction === 'CMB-MEL' ? 'CMB → MEL' : 'MEL → CMB'}</p>
           <p style={{ color: '#555', fontSize: 12, marginTop: 4 }}>Checking Jetstar & SriLankan Airlines</p>
         </div>
         <div style={{ width: '100%', height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden' }}>
@@ -724,7 +724,7 @@ export default function App() {
 
   return (
     <>
-      <RadarOverlay scraping={scraping} scanStep={scanStep} />
+      <RadarOverlay scraping={scraping} scanStep={scanStep} direction={direction} />
 
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
