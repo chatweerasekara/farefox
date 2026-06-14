@@ -209,7 +209,9 @@ function WindowsPage({ windows, flights1, flights2, history1, history2, status, 
 
       {windows.map((win, i) => {
         const { cheapest, diff, daysUntil } = windowData[i];
-        const avg = AVG_ROUND_TRIP[win.id];
+        const outbound = win.id === 1 ? flights1 : flights2;
+        const returnFlights = win.id === 1 ? flights1r : flights2r;
+        const avg = getAvgRoundTrip(outbound, returnFlights);
         return (
           <div key={win.id} className="bg-white rounded-2xl border border-gray-100 p-5">
             <div className="flex items-start justify-between mb-4">
@@ -251,11 +253,11 @@ function WindowsPage({ windows, flights1, flights2, history1, history2, status, 
                 <span className="text-xs text-gray-400">Avg round trip</span>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-500">JQ</span>
-                  <span className="text-xs font-medium text-gray-900">~A${avg.JQ.toLocaleString()}</span>
+                  <span className="text-xs font-medium text-gray-900">{avg.JQ ? `~A$${avg.JQ.toLocaleString()}` : '—'}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-500">UL</span>
-                  <span className="text-xs font-medium text-gray-900">~A${avg.UL.toLocaleString()}</span>
+                  <span className="text-xs font-medium text-gray-900">{avg.UL ? `~A$${avg.UL.toLocaleString()}` : '—'}</span>
                 </div>
               </div>
             </div>
