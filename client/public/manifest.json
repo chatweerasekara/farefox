@@ -2,6 +2,8 @@
   "name": "Farefox",
   "short_name": "Farefox",
   "description": "Your family's flight radar",
+  "id": "/",
+  "scope": "/",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
