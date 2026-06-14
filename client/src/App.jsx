@@ -156,9 +156,16 @@ function RadarOverlay({ scraping, scanStep, direction }) {
 function WindowsPage({ windows, flights1, flights2, history1, history2, status, flights1r, flights2r, history1r, history2r }) {
   const [winDirection, setWinDirection] = useState('MEL-CMB');
 
-  const AVG_ROUND_TRIP = {
-    1: { JQ: 1850, UL: 2400 },
-    2: { JQ: 1650, UL: 2200 },
+  const getAvgRoundTrip = (outboundFlights, returnFlights) => {
+    const calc = (key) => {
+      const out = outboundFlights.filter(f => f.airline.toLowerCase().includes(key));
+      const ret = returnFlights.filter(f => f.airline.toLowerCase().includes(key));
+      if (!out.length || !ret.length) return null;
+      const outAvg = out.reduce((sum, f) => sum + f.price_aud, 0) / out.length;
+      const retAvg = ret.reduce((sum, f) => sum + f.price_aud, 0) / ret.length;
+      return Math.round(outAvg + retAvg);
+    };
+    return { JQ: calc('jetstar'), UL: calc('srilankan') };
   };
 
   const getWindowData = (wid, flights, history) => {
