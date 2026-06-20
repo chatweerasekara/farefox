@@ -500,7 +500,7 @@ function AboutPage({ status, isAdmin }) {
               ), title: 'Alerts you', sub: 'Below A$1,100' },
             ].map(({ icon, title, sub }, i, arr) => (
               <div key={title} className="flex items-start gap-2 flex-1">
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex flex-col items-center gap-2 flex-1">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(193,123,42,0.1)' }}>
                     {icon}
                   </div>
