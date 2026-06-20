@@ -88,7 +88,7 @@ export default function HeroStat({ price, window, windowMeta, loading, history, 
         <div className="sm:text-right shrink-0">
           <p className="text-xs font-semibold uppercase tracking-widest" style={{color: '#444'}}>Alert Threshold</p>
           <p className="mt-2 text-3xl font-medium text-white">A${THRESHOLD.toLocaleString()}</p>
-          <p className="mt-1 text-xs" style={{color: '#444'}}>Jetstar · SriLankan Airlines</p>
+          <p className="mt-1 text-xs" style={{color: '#444'}}>Jetstar · Sri-Lankan Airlines</p>
           <p className="mt-1 text-xs" style={{color: '#444'}}>🔔 Alerts when price drops below A${THRESHOLD.toLocaleString()}</p>
 
           {!loading && (
