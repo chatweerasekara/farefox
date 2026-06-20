@@ -124,4 +124,4 @@ async function removeSubscriber(email) {
   }
 }
 
-module.exports = { appendFlights, readFlights, getScanCount, addSubscriber, getSubscribers, removeSubscriber };
+module.exports = { appendFlights, readFlights, getScanCount, addSubscriber, getSubscribers, removeSubscriber, updateScanStatus, getScanStatus };
