@@ -499,8 +499,8 @@ function AboutPage({ status, isAdmin }) {
                 </svg>
               ), title: 'Alerts you', sub: 'Below A$1,100' },
             ].map(({ icon, title, sub }, i, arr) => (
-              <div key={title} className="flex items-center gap-2 flex-1">
-                <div className="flex flex-col items-center gap-2 flex-1">
+              <div key={title} className="flex items-start gap-2 flex-1">
+                <div className="flex items-start justify-between gap-2">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(193,123,42,0.1)' }}>
                     {icon}
                   </div>
@@ -508,7 +508,7 @@ function AboutPage({ status, isAdmin }) {
                   <p className="text-xs text-gray-400 text-center">{sub}</p>
                 </div>
                 {i < arr.length - 1 && (
-                  <span className="text-gray-200 text-sm flex-shrink-0">→</span>
+                  <span className="text-gray-200 text-sm flex-shrink-0 mt-5">→</span>
                 )}
               </div>
             ))}
