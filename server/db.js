@@ -72,6 +72,22 @@ async function getScanCount() {
   const unique = new Set(data.map(r => r.timestamp));
   return unique.size;
 }
+async function updateScanStatus(lastRun, lastStatus) {
+  const { error } = await supabase
+    .from('scan_status')
+    .upsert({ id: 1, last_run: lastRun, last_status: lastStatus });
+  if (error) console.error('[DB] Update scan status error:', error.message);
+}
+
+async function getScanStatus() {
+  const { data, error } = await supabase
+    .from('scan_status')
+    .select('*')
+    .eq('id', 1)
+    .single();
+  if (error || !data) return { lastRun: null, lastStatus: 'never' };
+  return { lastRun: data.last_run, lastStatus: data.last_status };
+}
 
 async function addSubscriber({ email, threshold, window_1, window_2, mel_cmb = true, cmb_mel = true }) {
   const { data, error } = await supabase
