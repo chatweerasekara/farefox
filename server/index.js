@@ -25,9 +25,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log('[Socket] Client connected:', socket.id);
-  socket.emit('status', getStatus());
+  socket.emit('status', await getStatus());
   socket.on('disconnect', () => {
     console.log('[Socket] Client disconnected:', socket.id);
   });
@@ -36,8 +36,9 @@ io.on('connection', (socket) => {
 // GET /api/status
 app.get('/api/status', async (_req, res) => {
   const scanCount = await getScanCount();
+  const status = await getStatus();
   res.json({
-    ...getStatus(),
+    ...status,
     scanCount,
     windows: [getWindow1(), getWindow2()].map(w => ({
       id: w.id,
