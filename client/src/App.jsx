@@ -67,7 +67,7 @@ function ChangelogBanner() {
 function RadarOverlay({ scraping, scanStep, direction }) {
   const statusItems = [
     { label: 'Christmas & New Year window', done: scanStep >= 1 },
-    { label: 'Sri Lankan New Year window', done: scanStep >= 2 },
+    { label: 'Sri-Lankan New Year window', done: scanStep >= 2 },
     { label: 'Checking alerts', done: scanStep === 'done' },
   ];
   if (!scraping) return null;
@@ -115,7 +115,7 @@ function RadarOverlay({ scraping, scanStep, direction }) {
         <div style={{ textAlign: 'center' }}>
           <p style={{ color: '#fff', fontWeight: 500, fontSize: 15 }}>Scanning for fares…</p>
           <p style={{ color: '#C17B2A', fontWeight: 500, fontSize: 13, marginTop: 6 }}>MEL ↔ CMB</p>
-          <p style={{ color: '#555', fontSize: 12, marginTop: 4 }}>Checking Jetstar & SriLankan Airlines</p>
+          <p style={{ color: '#555', fontSize: 12, marginTop: 4 }}>Checking Jetstar & Sri-Lankan Airlines</p>
         </div>
         <div style={{ width: '100%', height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden' }}>
           <div style={{
