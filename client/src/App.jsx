@@ -409,7 +409,7 @@ function AlertsPage() {
         </div>
         <div className="flex items-center justify-between px-5 py-4">
           <div>
-            <p className="text-sm font-medium text-gray-800">Sri Lankan New Year</p>
+            <p className="text-sm font-medium text-gray-800">Sri-Lankan New Year</p>
             <p className="text-xs text-gray-400 mt-0.5">Apr 5 – Apr 20 · Autumn</p>
           </div>
           <button onClick={() => setWindow2(v => !v)}
