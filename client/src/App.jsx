@@ -481,7 +481,7 @@ function AboutPage({ status, isAdmin }) {
       <div>
         <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-3">How it works</p>
         <div className="bg-white rounded-2xl border border-gray-100 p-5">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-start justify-between gap-2">
             {[
               { icon: (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C17B2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
