@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const { scrapeWindow, scrapeWindowReverse } = require('./scraper');
 const { getWindow1, getWindow2 } = require('./dateWindows');
-const { appendFlights, getSubscribers } = require('./db');
+const { appendFlights, getSubscribers, updateScanStatus, getScanStatus } = require('./db');
 const { sendWhatsAppAlert } = require('./alerts');
 const { Resend } = require('resend');
 
@@ -250,6 +250,7 @@ async function runScrape(includeReverse = true) {
 
     lastRun = new Date().toISOString();
     lastStatus = `ok — ${allFlights.length} target flights found`;
+    await updateScanStatus(lastRun, lastStatus);
     console.log('[Scheduler]', lastStatus);
   } catch (err) {
     lastStatus = `error: ${err.message}`;
@@ -272,8 +273,13 @@ function startScheduler() {
   console.log('[Scheduler] Daily scrape scheduled at 08:00 (both) & 18:00 (MEL→CMB) Australia/Melbourne');
 }
 
-function getStatus() {
-  return { lastRun, lastStatus, isRunning };
+async function getStatus() {
+  const persisted = await getScanStatus();
+  return {
+    lastRun: lastRun ?? persisted.lastRun,
+    lastStatus: lastStatus !== 'never' ? lastStatus : persisted.lastStatus,
+    isRunning,
+  };
 }
 
 module.exports = { startScheduler, runScrape, getStatus, setSocketServer };
