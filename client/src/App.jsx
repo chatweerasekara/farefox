@@ -708,7 +708,7 @@ function DualClock() {
 
   return (
     <div
-      className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-lg flex-shrink-0"
+      className="flex items-center gap-1.5 px-2 py-1 rounded-lg flex-shrink-0"
       style={{ background: '#f9f9f7', border: '1px solid #eee' }}
     >
       <span className="flex items-center gap-0.5">
