@@ -7,6 +7,10 @@ function fmtDate(dateStr) {
       weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
     });
   } catch { return dateStr; }
+  
+  function formatAirline(name) {
+  if (!name) return name;
+  return name.replace('SriLankan', 'Sri-Lankan');
 }
 
 function AlertRow({ alert }) {
@@ -19,7 +23,7 @@ function AlertRow({ alert }) {
       <div className="flex-1">
         <p className="font-semibold text-sm" style={{ color: '#7a4a10' }}>
           Price alert!{' '}
-          <span className="font-bold">{alert.airline}</span>{' '}
+          <span className="font-bold">{formatAirline(alert.airline)}</span>{' '}
           dropped to{' '}
           <span className="font-bold" style={{ color: '#C17B2A' }}>A${alert.price_aud.toFixed(0)}</span>
         </p>
@@ -45,7 +49,7 @@ export default function AlertBanner({ alerts }) {
         <div className="flex-1">
           <p className="font-semibold text-sm" style={{ color: '#7a4a10' }}>
             Price alert!{' '}
-            <span className="font-bold">{cheapest.airline}</span>{' '}
+            <span className="font-bold">{formatAirline(cheapest.airline)}</span>{' '}
             dropped to{' '}
             <span className="font-bold" style={{ color: '#C17B2A' }}>A${cheapest.price_aud.toFixed(0)}</span>
           </p>
