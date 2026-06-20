@@ -865,7 +865,7 @@ export default function App() {
                   <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#111' }}>Fare</span>
                   <span className="text-xl font-medium" style={{ letterSpacing: '-0.03em', color: '#C17B2A' }}>fox</span>
                 </div>
-                <div className="text-gray-400 mt-0.025" style={{ fontSize: 10 }}>Your family's flight radar</div>
+                <div className="text-xs text-gray-400 mt-0.025">Your family's flight radar</div>
               </div>
             </button>
 
