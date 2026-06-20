@@ -678,7 +678,7 @@ function TopNav({ activePage, setActivePage }) {
   );
 }
 // ── Dual Clock (MEL / CMB) ──────────────────────────────────────────────────
-function CityClock({ city, timeZone }) {
+function useCityTime(timeZone) {
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -699,33 +699,29 @@ function CityClock({ city, timeZone }) {
   const hour = parseInt(hourFmt.format(now), 10);
   const isDay = hour >= 6 && hour < 18;
 
-  return (
-    <div
-      className="flex items-center gap-1 px-2 py-1 rounded-lg"
-      style={{ background: isDay ? '#f9f9f7' : '#1a1a1a', border: `1px solid ${isDay ? '#eee' : '#1a1a1a'}` }}
-    >
-      <span style={{ fontSize: 10 }}>{isDay ? '☀️' : '🌙'}</span>
-      <span
-        className="text-xs font-bold uppercase tracking-wide"
-        style={{ color: isDay ? '#999' : '#888' }}
-      >
-        {city}
-      </span>
-      <span
-        className="text-xs font-semibold"
-        style={{ color: isDay ? '#111' : '#fff', fontVariantNumeric: 'tabular-nums' }}
-      >
-        {timeFmt.format(now)}
-      </span>
-    </div>
-  );
+  return { time: timeFmt.format(now), isDay };
 }
 
 function DualClock() {
+  const mel = useCityTime('Australia/Melbourne');
+  const cmb = useCityTime('Asia/Colombo');
+
   return (
-    <div className="hidden md:flex flex-col gap-0.5">
-      <CityClock city="MEL" timeZone="Australia/Melbourne" />
-      <CityClock city="CMB" timeZone="Asia/Colombo" />
+    <div
+      className="hidden md:flex items-center gap-2 px-2.5 py-1.5 rounded-lg flex-shrink-0"
+      style={{ background: '#f9f9f7', border: '1px solid #eee' }}
+    >
+      <span className="flex items-center gap-1">
+        <span style={{ fontSize: 10 }}>{mel.isDay ? '☀️' : '🌙'}</span>
+        <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#aaa' }}>MEL</span>
+        <span className="text-xs font-semibold" style={{ color: '#111', fontVariantNumeric: 'tabular-nums' }}>{mel.time}</span>
+      </span>
+      <span style={{ width: 1, height: 14, background: '#e5e1d8' }} />
+      <span className="flex items-center gap-1">
+        <span style={{ fontSize: 10 }}>{cmb.isDay ? '☀️' : '🌙'}</span>
+        <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#aaa' }}>CMB</span>
+        <span className="text-xs font-semibold" style={{ color: '#111', fontVariantNumeric: 'tabular-nums' }}>{cmb.time}</span>
+      </span>
     </div>
   );
 }
