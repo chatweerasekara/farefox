@@ -7,7 +7,7 @@ function fmtDate(dateStr) {
       weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
     });
   } catch { return dateStr; }
-  
+}
   function formatAirline(name) {
   if (!name) return name;
   return name.replace('SriLankan', 'Sri-Lankan');
