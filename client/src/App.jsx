@@ -723,7 +723,7 @@ function CityClock({ city, timeZone }) {
 
 function DualClock() {
   return (
-    <div className="hidden md:flex items-center gap-1.5">
+    <div className="hidden md:flex flex-col gap-0.5">
       <CityClock city="MEL" timeZone="Australia/Melbourne" />
       <CityClock city="CMB" timeZone="Asia/Colombo" />
     </div>
