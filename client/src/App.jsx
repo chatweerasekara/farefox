@@ -677,7 +677,58 @@ function TopNav({ activePage, setActivePage }) {
     </div>
   );
 }
+// ── Dual Clock (MEL / CMB) ──────────────────────────────────────────────────
+function CityClock({ city, timeZone }) {
+  const [now, setNow] = useState(() => new Date());
 
+  useEffect(() => {
+    const tick = () => setNow(new Date());
+    const msToNextMinute = (60 - new Date().getSeconds()) * 1000;
+    const timeout = setTimeout(() => {
+      tick();
+      const interval = setInterval(tick, 60000);
+      return () => clearInterval(interval);
+    }, msToNextMinute);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const timeFmt = new Intl.DateTimeFormat('en-AU', {
+    timeZone, hour: '2-digit', minute: '2-digit', hour12: false,
+  });
+  const hourFmt = new Intl.DateTimeFormat('en-AU', { timeZone, hour: 'numeric', hour12: false });
+  const hour = parseInt(hourFmt.format(now), 10);
+  const isDay = hour >= 6 && hour < 18;
+
+  return (
+    <div
+      className="flex items-center gap-1 px-2 py-1 rounded-lg"
+      style={{ background: isDay ? '#f9f9f7' : '#1a1a1a', border: `1px solid ${isDay ? '#eee' : '#1a1a1a'}` }}
+    >
+      <span style={{ fontSize: 10 }}>{isDay ? '☀️' : '🌙'}</span>
+      <span
+        className="text-xs font-bold uppercase tracking-wide"
+        style={{ color: isDay ? '#999' : '#888' }}
+      >
+        {city}
+      </span>
+      <span
+        className="text-xs font-semibold"
+        style={{ color: isDay ? '#111' : '#fff', fontVariantNumeric: 'tabular-nums' }}
+      >
+        {timeFmt.format(now)}
+      </span>
+    </div>
+  );
+}
+
+function DualClock() {
+  return (
+    <div className="hidden md:flex items-center gap-1.5">
+      <CityClock city="MEL" timeZone="Australia/Melbourne" />
+      <CityClock city="CMB" timeZone="Asia/Colombo" />
+    </div>
+  );
+}
 // ── Main App ───────────────────────────────────────────────────────────────────
 export default function App() {
   const [activePage, setActivePage]     = useState('flights');
@@ -824,6 +875,7 @@ export default function App() {
 
             {/* Desktop nav + right side */}
             <div className="flex items-center gap-4">
+              <DualClock />
               <TopNav activePage={activePage} setActivePage={setActivePage} />
               {status && isAdmin && (
                 <span className="text-xs text-gray-400 hidden sm:block">
