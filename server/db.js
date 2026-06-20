@@ -62,14 +62,28 @@ async function readFlights(windowId, direction = 'MEL-CMB') {
 }
 
 async function getScanCount() {
-  const { data, error } = await supabase
-    .from('flights')
-    .select('timestamp');
-  if (error) {
-    console.error('[DB] Scan count error:', error.message);
-    return 0;
+  let allTimestamps = [];
+  let from = 0;
+  const pageSize = 1000;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from('flights')
+      .select('timestamp')
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      console.error('[DB] Scan count error:', error.message);
+      return 0;
+    }
+
+    allTimestamps = [...allTimestamps, ...data];
+
+    if (data.length < pageSize) break;
+    from += pageSize;
   }
-  const unique = new Set(data.map(r => r.timestamp));
+
+  const unique = new Set(allTimestamps.map(r => r.timestamp));
   return unique.size;
 }
 async function updateScanStatus(lastRun, lastStatus) {
