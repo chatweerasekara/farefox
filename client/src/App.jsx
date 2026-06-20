@@ -708,19 +708,19 @@ function DualClock() {
 
   return (
     <div
-      className="flex items-center gap-1.5 px-2 py-1 rounded-lg flex-shrink-0"
+      className="flex items-center gap-1 md:gap-1.5 px-1.5 md:px-2 py-1 rounded-lg flex-shrink-0"
       style={{ background: '#f9f9f7', border: '1px solid #eee' }}
     >
       <span className="flex items-center gap-0.5">
-        <span style={{ fontSize: 9 }}>{mel.isDay ? '☀️' : '🌙'}</span>
-        <span className="font-bold uppercase tracking-wide" style={{ color: '#aaa', fontSize: 9 }}>MEL</span>
-        <span className="font-semibold" style={{ color: '#111', fontSize: 11, fontVariantNumeric: 'tabular-nums' }}>{mel.time}</span>
+        <span className="text-[7px] md:text-[9px]">{mel.isDay ? '☀️' : '🌙'}</span>
+        <span className="font-bold uppercase tracking-wide text-[7px] md:text-[9px]" style={{ color: '#aaa' }}>MEL</span>
+        <span className="font-semibold text-[10px] md:text-[11px]" style={{ color: '#111', fontVariantNumeric: 'tabular-nums' }}>{mel.time}</span>
       </span>
-      <span style={{ width: 1, height: 12, background: '#e5e1d8' }} />
+      <span style={{ width: 1, background: '#e5e1d8' }} className="h-[10px] md:h-[12px]" />
       <span className="flex items-center gap-0.5">
-        <span style={{ fontSize: 9 }}>{cmb.isDay ? '☀️' : '🌙'}</span>
-        <span className="font-bold uppercase tracking-wide" style={{ color: '#aaa', fontSize: 9 }}>CMB</span>
-        <span className="font-semibold" style={{ color: '#111', fontSize: 11, fontVariantNumeric: 'tabular-nums' }}>{cmb.time}</span>
+        <span className="text-[7px] md:text-[9px]">{cmb.isDay ? '☀️' : '🌙'}</span>
+        <span className="font-bold uppercase tracking-wide text-[7px] md:text-[9px]" style={{ color: '#aaa' }}>CMB</span>
+        <span className="font-semibold text-[10px] md:text-[11px]" style={{ color: '#111', fontVariantNumeric: 'tabular-nums' }}>{cmb.time}</span>
       </span>
     </div>
   );
