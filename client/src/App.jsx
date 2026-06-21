@@ -916,7 +916,7 @@ export default function App() {
                 <p style={{ fontSize:13, color:'#7a5020', lineHeight:1.5, margin:0 }}><strong style={{ color:'#5a3a10' }}>Before you book</strong> — Always check provider ratings on Skyscanner. Where possible, book directly with the airline or a highly-rated provider.</p>
               </div>
               <p className="text-center text-xs text-gray-300 pb-4">
-                Checks daily at 08:00 & 18:00 · Jetstar & SriLankan Airlines · Alert below A$1,100 · One way fares only
+                Checks daily at 08:00 & 18:00 · Jetstar & Sri-Lankan Airlines · Alert below A$1,100 · One way fares only
               </p>
             </main>
           )}
