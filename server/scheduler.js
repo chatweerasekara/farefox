@@ -262,15 +262,15 @@ async function runScrape(includeReverse = true) {
 }
 
 function startScheduler() {
-  cron.schedule('0 8 * * *', () => {
-    console.log('[Scheduler] Cron fired — 08:00 Melbourne daily scrape (MEL↔CMB)');
+  cron.schedule('30 7 * * *', () => {
+    console.log('[Scheduler] Cron fired — 07:30 Melbourne daily scrape (MEL↔CMB)');
     runScrape(true);
   }, { timezone: 'Australia/Melbourne' });
-  cron.schedule('0 18 * * *', () => {
-    console.log('[Scheduler] Cron fired — 18:00 Melbourne daily scrape (MEL→CMB only)');
+  cron.schedule('30 17 * * *', () => {
+    console.log('[Scheduler] Cron fired — 17:30 Melbourne daily scrape (MEL→CMB only)');
     runScrape(false);
   }, { timezone: 'Australia/Melbourne' });
-  console.log('[Scheduler] Daily scrape scheduled at 08:00 (both) & 18:00 (MEL→CMB) Australia/Melbourne');
+  console.log('[Scheduler] Daily scrape scheduled at 07:30 (both) & 17:30 (MEL→CMB) Australia/Melbourne');
 }
 
 async function getStatus() {
