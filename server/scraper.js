@@ -76,14 +76,7 @@ async function scrapeWindowReverse(window) {
   for (const date of sampledDates) {
     try {
       console.log(`[Scraper]   → ${date}`);
-      let data;
-      try {
-        data = await searchFlightsForDateReverse(date);
-      } catch (err) {
-        console.warn(`[Scraper]   ↻ ${date}: retrying after timeout...`);
-        await sleep(3000);
-        data = await searchFlightsForDateReverse(date);
-      }
+      const data = await searchFlightsForDateReverse(date);
       const flights = extractTargetFlights(data, date, window.id, scanTimestamp, 'CMB-MEL');
       results.push(...flights);
       await sleep(1200);
@@ -102,14 +95,7 @@ async function scrapeWindow(window) {
   for (const date of sampledDates) {
     try {
       console.log(`[Scraper]   → ${date}`);
-      let data;
-      try {
-        data = await searchFlightsForDate(date);
-      } catch (err) {
-        console.warn(`[Scraper]   ↻ ${date}: retrying after timeout...`);
-        await sleep(3000);
-        data = await searchFlightsForDate(date);
-      }
+      const data = await searchFlightsForDate(date);
       const flights = extractTargetFlights(data, date, window.id, scanTimestamp);
       results.push(...flights);
       await sleep(1200);
